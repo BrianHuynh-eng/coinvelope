@@ -1,0 +1,39 @@
+{
+  "name": "coinvelope",
+  "version": "1.0.0",
+  "description": "Open-source budgeting software project that uses the envelope budgeting principles",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \\\"Error: no test specified\\\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/BrianHuynh-eng/coinvelope.git"
+  },
+  "keywords": [
+    "budgeting",
+    "money",
+    "expenses",
+    "envelope",
+    "open-source",
+    "free",
+    "Express.js",
+    "Node.js",
+    "API",
+    "backend",
+    "Javascript",
+    "experiment",
+    "project",
+    "budget"
+  ],
+  "author": "BrianHuynh-eng",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/BrianHuynh-eng/coinvelope/issues"
+  },
+  "homepage": "https://github.com/BrianHuynh-eng/coinvelope#readme",
+  "dependencies": {
+    "express": "^4.21.1",
+    "morgan": "^1.10.0"
+  }
+}

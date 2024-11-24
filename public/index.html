@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coinvelope</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="./js/script.js" defer></script>
+  </head>
+
+  <body>
+    <!-- Implement a search bar (input field form) that, if the user eners the category of the envelope, it will call a function that will redirect the user to a page with this specific envelope category -->
+
+    <h1>Coinvelope helps people get their spending right</h1>
+
+    <!-- Redirects user to page that shows information of this one envelope -->
+    <div id="search-container">
+        <div id="search-bar">
+            <form id="search-form">
+                <input type="text" id="search-input" placeholder="Envelope Search" />
+                <button type="submit">🔍 Search</button>
+            </form>
+        </div>
+    </div>
+
+    <h2>Your envelopes</h2>
+    <div id="envelopes-all">
+        <div id="envelopes-container">
+            <table id="envelopes-table">
+                <thead></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <h3>Create a new envelope</h3>
+    <div id="envelope-creation">
+        <form id="envelope-form">
+            <label for="category">What will be your new envelope's category?</label>
+            <input type="text" id="category" name="category" required />
+
+            <label for="amount">How much will you spend per month in this category?<br><span>Think wisely!</span></label>
+            <input type="number" id="amount" name="amount" required />
+
+            <button type="submit">Create envelope</button>
+        </form>
+    </div>
+
+    <h3>Transfer funds between envelopes</h3>
+    <div id="transfer-funds">
+        <form id="transfer-form">
+            <label for="from">From envelope:</label>
+            <input type="text" id="from" name="from" required />
+
+            <label for="to">To envelope:</label>
+            <input type="text" id="to" name="to" required />
+
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" name="amount" required />
+
+            <button type="submit">Transfer funds</button>
+        </form>
+    </div>
+
+    <!-- This should only be visible for 10 seconds -->
+    <h4>Logging/results/updates pool</h4> 
+    <div id="pool"></div>
+
+    <footer id="footer">
+        <p>Mock startup company / experiment / mini-project by <a href="https://github.com/BrianHuynh-eng">B.H.</a></p>
+        <p>2024 Coinvelope, by Kepler Labs Inc.</p>
+    </footer>
+  </body>
+</html>
