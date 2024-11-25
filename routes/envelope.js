@@ -1,11 +1,13 @@
 const express = require('express');
+const toTitleCase = require('../utils/toTitleCase');
+
 const envelopeRouter = express.Router();
 
 const envelopes = []; // Stores envelopes of a category: [{ category: 'Groceries', amount: 100}, { category: 'Gas', amount: 90 }]
 
 
-envelopeRouter.param('category', (req, res, next, id) => {
-    const envelope = envelopes.find((envelope) => envelope['category'] === id);
+envelopeRouter.param('category', (req, res, next, category) => {
+    const envelope = envelopes.find((envelope) => envelope['category'] === toTitleCase(category));
 
     if (envelope) {
         req.envelope = envelope;
@@ -17,7 +19,7 @@ envelopeRouter.param('category', (req, res, next, id) => {
 
 
 // Read envelopes
-envelopeRouter.get('', (req, res) => {
+envelopeRouter.get('/all', (req, res) => {
     if (envelopes.length !== 0) {
         res.status(200).json(envelopes);
     } else {
@@ -33,6 +35,7 @@ envelopeRouter.get('/:category', (req, res) => {
 // Create envelopes
 envelopeRouter.post('/new', (req, res) => {
     let { category, amount } = req.body;
+    category = toTitleCase(category);
 
     const categoryExists = envelopes.some((envelope) => envelope['category'] === category);
     if (categoryExists) {
@@ -44,7 +47,7 @@ envelopeRouter.post('/new', (req, res) => {
         return res.status(400).json({error: 'Category and amount are required; amount also must be a positive number'});
     }
 
-    const newEnvelope = {category, amount};
+    const newEnvelope = { category, amount };
 
     envelopes.push(newEnvelope);
     res.status(201).json(newEnvelope);
@@ -74,6 +77,8 @@ envelopeRouter.put('/:category/subtract', (req, res) => {
 
 envelopeRouter.put('/transfer', (req, res) => {
     let { from, to, amount } = req.body;
+    from = toTitleCase(from);
+    to = toTitleCase(to);
     amount = Number(amount);
 
     const categoryFrom = envelopes.find((envelope) => envelope['category'] === from);

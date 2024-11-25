@@ -5,71 +5,125 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Coinvelope</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="./css/style.css" />
     <script src="./js/script.js" defer></script>
   </head>
 
   <body>
-    <!-- Implement a search bar (input field form) that, if the user eners the category of the envelope, it will call a function that will redirect the user to a page with this specific envelope category -->
+    <div id="about-envelope-all" class="page active">
+        <h1>Coinvelope helps people get their spending right</h1>
 
-    <h1>Coinvelope helps people get their spending right</h1>
+        <div id="search-container">
+            <div id="search-bar">
+                <form id="search-form">
+                    <input type="text" id="category-search" name="category-search" placeholder="Envelope Search: Enter a category" />
+                    <button type="submit">🔍 Search</button>
+                </form>
+            </div>
+        </div>
 
-    <!-- Redirects user to page that shows information of this one envelope -->
-    <div id="search-container">
-        <div id="search-bar">
-            <form id="search-form">
-                <input type="text" id="search-input" placeholder="Envelope Search" />
-                <button type="submit">🔍 Search</button>
+        <h2>Your envelopes</h2>
+        <div id="envelopes-all">
+            <div id="envelopes-container">
+                <table id="envelopes-table">
+                    <thead></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <h3>Create a new envelope</h3>
+        <div id="envelope-creation">
+            <form id="envelope-creation-form">
+                <label for="category">What will be your new envelope's category?</label>
+                <input type="text" id="category" name="category" required />
+
+                <label for="amount">How much will you spend per month in this category?<br><span>Think wisely!</span></label>
+                <input type="number" id="amount" name="amount" required />
+
+                <button type="submit">Create envelope</button>
+            </form>
+        </div>
+
+        <h3>Transfer funds between envelopes</h3>
+        <div id="transfer-funds">
+            <form id="transfer-funds-form">
+                <label for="from">From envelope:</label>
+                <input type="text" id="from" name="from" required />
+
+                <label for="to">To envelope:</label>
+                <input type="text" id="to" name="to" required />
+
+                <label for="amount">Amount:</label>
+                <input type="number" id="amount" name="amount" required />
+
+                <button type="submit">Transfer funds</button>
             </form>
         </div>
     </div>
 
-    <h2>Your envelopes</h2>
-    <div id="envelopes-all">
-        <div id="envelopes-container">
-            <table id="envelopes-table">
-                <thead></thead>
-                <tbody></tbody>
-            </table>
+    <div id="about-envelope-single" class="page">
+        <div id="return-to-all-envelopes">
+            <button type="button">Return to home</button>
+        </div>
+
+        <div id="search-container">
+            <div id="search-bar">
+                <form id="search-form">
+                    <input type="text" id="category-search" name="category-search" placeholder="Search for another envelope category" />
+                    <button type="submit">🔍 Search</button>
+                </form>
+            </div>
+        </div>
+
+        <h1 id="envelope-category-msg"></h1>
+
+        <div id="envelope-single">
+            <div id="envelope-single-container">
+                <table id="envelope-single-table">
+                    <thead></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <h3>Update $ amount</h3>
+        <div id="update-amount">
+            <form id="update-amount-form">
+                <label for="amount">How much will you spend <i>now</i> per month in this category?<br><span>Think wisely!</span></label>
+                <input type="number" id="amount" name="amount" required />
+
+                <button type="submit">Update amount</button>
+            </form>
+        </div>
+
+        <h3>Track spending & subtract amount</h3>
+        <div id="subtract-amount">
+            <form id="subtract-amount-form">
+                <label for="subtract-amount">Enter the $ value of your purchase/payment in this category</label>
+                <input type="number" id="subtract-amount" name="subtract-amount" required />
+
+                <button type="submit">Subtract amount</button>
+            </form>
+        </div>
+
+        <div id="danger-zone">
+            <h3>Danger Zone</h3>
+            <p>If you delete this envelope, you will lose all the data associated with it. This action cannot be undone.<br>
+                <span>>We will not give you a warning or ask you to enter a confirmation word/phrase. Once you click on the button, your envelope will be deleted immediately.</span>
+            </p>
+            <button id="delete-envelope">Delete envelope</button>
         </div>
     </div>
 
-    <h3>Create a new envelope</h3>
-    <div id="envelope-creation">
-        <form id="envelope-form">
-            <label for="category">What will be your new envelope's category?</label>
-            <input type="text" id="category" name="category" required />
-
-            <label for="amount">How much will you spend per month in this category?<br><span>Think wisely!</span></label>
-            <input type="number" id="amount" name="amount" required />
-
-            <button type="submit">Create envelope</button>
-        </form>
-    </div>
-
-    <h3>Transfer funds between envelopes</h3>
-    <div id="transfer-funds">
-        <form id="transfer-form">
-            <label for="from">From envelope:</label>
-            <input type="text" id="from" name="from" required />
-
-            <label for="to">To envelope:</label>
-            <input type="text" id="to" name="to" required />
-
-            <label for="amount">Amount:</label>
-            <input type="number" id="amount" name="amount" required />
-
-            <button type="submit">Transfer funds</button>
-        </form>
-    </div>
-
+    <!-- All of the following below should be visible all the time -->
     <!-- This should only be visible for 10 seconds -->
     <h4>Logging/results/updates pool</h4> 
     <div id="pool"></div>
 
     <footer id="footer">
-        <p>Mock startup company / experiment / mini-project by <a href="https://github.com/BrianHuynh-eng">B.H.</a></p>
-        <p>2024 Coinvelope, by Kepler Labs Inc.</p>
+        <p>Mock startup company / experiment / mini-project by <a href="https://github.com/BrianHuynh-eng" target="_blank">B.H.</a></p>
+        <p>2024 © Coinvelope, by Kepler Labs Inc.</p>
     </footer>
   </body>
 </html>
