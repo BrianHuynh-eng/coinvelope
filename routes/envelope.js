@@ -66,32 +66,37 @@ envelopeRouter.put('/:category/update', (req, res) => {
     res.status(200).json(req.envelope);
 });
 
-envelopeRouter.put('/:category/subtract', (req, res) => {
-    if ((req.envelope['amount'] - Number(req.body.amount)) < 0) {
+envelopeRouter.put('/:category/update/subtract', (req, res) => {
+    const amount = Number(req.body.amount);
+
+    if ((req.envelope['amount'] - amount) < 0) {
         return res.status(400).json({error: 'Insufficient funds; You may need to transfer funds from another category to this category'});
     }
 
-    req.envelope['amount'] -= Number(req.body.amount);
+    req.envelope['amount'] -= amount;
     res.status(200).json(req.envelope);
 });
 
 envelopeRouter.put('/transfer', (req, res) => {
-    let { from, to, amount } = req.body;
-    from = toTitleCase(from);
-    to = toTitleCase(to);
-    amount = Number(amount);
+    let { categoryFrom, categoryTo, amountToTransfer } = req.body;
 
-    const categoryFrom = envelopes.find((envelope) => envelope['category'] === from);
-    const categoryTo = envelopes.find((envelope) => envelope['category'] === to);
+    categoryFrom = toTitleCase(categoryFrom);
+    categoryTo = toTitleCase(categoryTo);
+    amountToTransfer = Number(amountToTransfer);
 
-    if (categoryFrom && categoryTo) {
-        if (categoryFrom['amount'] >= amount) {
-            categoryFrom['amount'] -= amount;
-            categoryTo['amount'] += amount;
-            res.status(200).json({from: categoryFrom, to: categoryTo});
+    const envelopeFrom = envelopes.find((envelope) => envelope['category'] === categoryFrom);
+    const envelopeTo = envelopes.find((envelope) => envelope['category'] === categoryTo);
+
+    if (envelopeFrom && envelopeTo) {
+        if (envelopeFrom['amount'] >= amountToTransfer) {
+            envelopeFrom['amount'] -= amountToTransfer;
+            envelopeTo['amount'] += amountToTransfer;
+            res.status(200).json({ envelopeFrom, envelopeTo });
+
         } else {
-            res.status(400).json({error: `Insufficient funds in '${from}' category`});
+            res.status(400).json({error: `Insufficient funds for '${categoryFrom}' category`});
         }
+
     } else {
         res.status(404).json({error: 'Envelope(s) not found'});
     }
@@ -101,7 +106,7 @@ envelopeRouter.put('/transfer', (req, res) => {
 // Delete envelopes
 envelopeRouter.delete('/:category/delete', (req, res) => {
     envelopes.splice(envelopes.indexOf(req.envelope), 1);
-    res.status(200).json({message: 'Envelope deleted'});
+    res.status(200).send(`${req.params.category} envelope successfully deleted`);
 });
 
 

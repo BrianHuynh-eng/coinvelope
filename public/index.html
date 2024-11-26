@@ -48,13 +48,13 @@
         <h3>Transfer funds between envelopes</h3>
         <div id="transfer-funds">
             <form id="transfer-funds-form">
-                <label for="from">From envelope:</label>
-                <input type="text" id="from" name="from" required />
+                <label for="categoryFrom">What envelope do you want to take money from?</label>
+                <input type="text" id="categoryFrom" name="categoryFrom" placeholder="Enter the envelope's category" required />
 
-                <label for="to">To envelope:</label>
-                <input type="text" id="to" name="to" required />
+                <label for="categoryTo">What envelope do you want to transfer that money to?</label>
+                <input type="text" id="categoryTo" name="categoryTo" placeholder="Enter the envelope's category" required />
 
-                <label for="amount">Amount:</label>
+                <label for="amount">How much money will be transfered?</label>
                 <input type="number" id="amount" name="amount" required />
 
                 <button type="submit">Transfer funds</button>
@@ -100,8 +100,8 @@
         <h3>Track spending & subtract amount</h3>
         <div id="subtract-amount">
             <form id="subtract-amount-form">
-                <label for="subtract-amount">Enter the $ value of your purchase/payment in this category</label>
-                <input type="number" id="subtract-amount" name="subtract-amount" required />
+                <label for="amount">Enter the $ value of your purchase/payment in this category</label>
+                <input type="number" id="amount" name="amount" required />
 
                 <button type="submit">Subtract amount</button>
             </form>
@@ -109,15 +109,12 @@
 
         <div id="danger-zone">
             <h3>Danger Zone</h3>
-            <p>If you delete this envelope, you will lose all the data associated with it. This action cannot be undone.<br>
-                <span>>We will not give you a warning or ask you to enter a confirmation word/phrase. Once you click on the button, your envelope will be deleted immediately.</span>
-            </p>
-            <button id="delete-envelope">Delete envelope</button>
+            <p>If you delete this envelope, you will lose all the data associated with it. This action cannot be undone.</p>
+            <button id="delete-envelope-button">Delete envelope</button>
         </div>
     </div>
 
     <!-- All of the following below should be visible all the time -->
-    <!-- This should only be visible for 10 seconds -->
     <h4>Logging/results/updates pool</h4> 
     <div id="pool"></div>
 
