@@ -96,7 +96,7 @@ const displaySingleEnvelope = async () => {
 
             const searchInput = event.target.querySelector('#category-search');
             const category = searchInput.value.trim();
-            const envelope = await fetchEnvelope(category, thead, tbody, envelopePage);
+            const envelope = await fetchEnvelope(category, thead, tbody, envelopePage, envelopeCategoryMsg);
 
             navigateToEnvelope(envelope);
             searchInput.value = '';
@@ -183,7 +183,7 @@ creationForm.addEventListener('submit', async (event) => {
     }
 });
 
-// Find a way to submit the search bar form via javascript directly
+
 // Update envelopes
 const updateForm = document.querySelector('#update-amount-form');
 
@@ -406,6 +406,11 @@ deleteEnvelopeButton.addEventListener('click', async () => {
 });
 
 
+// Return to home
+const returnToHomeButton = document.querySelector('#return-to-home-button');
+returnToHomeButton.addEventListener('click', () => window.location.href = '/');
+
+
 // Update pool
 const displayUpdatePool = async () => {
     try {
@@ -468,15 +473,15 @@ const enterTableInfo = (envelope, thead, tbody) => {
     tbody.appendChild(row);
 };
 
-const fetchEnvelope = async (category, thead, tbody, envelopePage) => {
+const fetchEnvelope = async (category, thead, tbody, envelopePage, envelopeCategoryMsg) => {
     try {
-        const response = await fetch(`/api/envelope/${encodeURIComponent(category).toLowerCase()}`);
+        const response = await fetch(`/api/envelope/${encodeURIComponent(category.toLowerCase())}`);
         const envelope = await response.json();
 
         if (!response.ok) {
             showPage(envelopePage);
 
-            envelopeCategoryMsg.textContent = `${envelope['msg']}. Perhaps you made a typo?`;
+            envelopeCategoryMsg.textContent = `'${category}' ${envelope['msg'].toLowerCase()}! Perhaps you made a typo?`;
 
             thead.innerHTML = '';
             tbody.innerHTML = '';
@@ -504,8 +509,9 @@ const showEnvelopePage = async (category) => {
     const thead = table.querySelector('thead');
     const tbody = table.querySelector('tbody');
     const envelopePage = document.querySelector('#about-envelope-single');
+    const envelopeCategoryMsg = document.querySelector('#envelope-category-msg');
 
     showPage(envelopePage);
-    const envelope = await fetchEnvelope(category, thead, tbody, envelopePage);
+    const envelope = await fetchEnvelope(category, thead, tbody, envelopePage, envelopeCategoryMsg);
     enterTableInfo(envelope, thead, tbody);
 };
