@@ -1,10 +1,11 @@
-// Display envelope(s)
 document.addEventListener('DOMContentLoaded', () => {
     displayAllEnvelopes();
     displaySingleEnvelope();
+    displayUpdatePool();
 });
 
 
+// Read envelope(s)
 const displayAllEnvelopes = async () => {
     try {
         const response = await fetch('/api/envelope/all');
@@ -14,7 +15,7 @@ const displayAllEnvelopes = async () => {
             const envelopesContainer = document.querySelector('#envelopes-container');
             const noEnvelopesMsg = document.createElement('p');
 
-            noEnvelopesMsg.textContent = `${envelopes['error']}!<br>Where are the envelopes? Starting creating some below!`;
+            noEnvelopesMsg.textContent = `${envelopes['msg']}! Where are the envelopes? Starting creating some below!`;
             envelopesContainer.appendChild(noEnvelopesMsg);
 
             return;
@@ -60,69 +61,17 @@ const displaySingleEnvelope = async () => {
     const envelopePage = document.querySelector('#about-envelope-single');
     const searchForms = document.querySelectorAll('#search-form');
     const envelopeCategoryMsg = document.querySelector('#envelope-category-msg');
+
     const table = document.querySelector('#envelope-single-table');
-
-    const showPage = (pageToShow) => {
-        const pagesToHide = document.querySelectorAll('.page');
-
-        pagesToHide.forEach((page) => {
-            page.classList.remove('active');
-        });
-
-        pageToShow.classList.add('active');
-    };
-
-    const enterTableInfo = (envelope) => {
-        const thead = table.querySelector('thead');
-        const tbody = table.querySelector('tbody');
-
-        thead.innerHTML = '';
-        tbody.innerHTML = '';
-
-        const headers = Object.keys(envelope);
-        
-        const headerRow = document.createElement('tr');
-        headers.forEach((header) => {
-            const th = document.createElement('th');
-            th.textContent = header;
-            headerRow.appendChild(th);
-        });
-
-        thead.appendChild(headerRow);
-
-        const row = document.createElement('tr');
-        headers.forEach((header) => {
-            const cell = document.createElement('td');
-            cell.textContent = envelope[header];
-            row.appendChild(cell);
-        });
-
-        tbody.appendChild(row);
-    };
-
-    const fetchEnvelope = async (category) => {
-        try {
-            const response = await fetch(`/api/envelope/${encodeURIComponent(category)}`);
-            const envelope = await response.json();
-
-            if (!response.ok) {
-                envelopeCategoryMsg.textContent = `${envelope['error']}<br>Perhaps you made a typo?`;
-                return;
-            }
-
-            return envelope;
-
-        } catch (error) {
-            alert('Something happened while we were fetching the envelope. This is on our side, not yours. Please try again.');
-        }
-    };
+    const thead = table.querySelector('thead');
+    const tbody = table.querySelector('tbody');
 
     const navigateToEnvelope = (envelope) => {
         const category = envelope['category'].trim();
 
         showPage(envelopePage);
         envelopeCategoryMsg.textContent = category;
-        enterTableInfo(envelope);
+        enterTableInfo(envelope, thead, tbody);
 
         history.pushState(
             {page: 'envelope', category: category},
@@ -145,9 +94,9 @@ const displaySingleEnvelope = async () => {
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
 
-            const searchInput = this.querySelector('#category-search');
+            const searchInput = event.target.querySelector('#category-search');
             const category = searchInput.value.trim();
-            const envelope = await fetchEnvelope(category);
+            const envelope = await fetchEnvelope(category, thead, tbody, envelopePage);
 
             navigateToEnvelope(envelope);
             searchInput.value = '';
@@ -189,8 +138,8 @@ const creationForm = document.querySelector('#envelope-creation-form');
 creationForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const category = document.querySelector('#category').value;
-    const amount = document.querySelector('#envelope-creation-form #amount').value;
+    const category = creationForm.querySelector('#category').value;
+    const amount = creationForm.querySelector('#amount').value;
 
     try {
         const response = await fetch(
@@ -204,42 +153,47 @@ creationForm.addEventListener('submit', async (event) => {
             }
         );
 
-        const newEnvelope = await response.json();
-
-        const updatePool = document.querySelector('#pool');
-        const updatePoolMsg = document.createElement('p');
+        const responseMsg = await response.json();
+        const msg = responseMsg['msg'];
 
         if (!response.ok) {
-            alert(`Error: ${newEnvelope['error']}!`);
-
-            updatePoolMsg.textContent = `Create envelope error: ${newEnvelope['error']}. Please try again!`;
-            updatePool.appendChild(updatePoolMsg);
-            return;
+            alert(`Error: ${msg}!`);
         }
 
-        updatePoolMsg.textContent = `Your latest envelope!:<br>${newEnvelope}`;
-        updatePool.appendChild(updatePoolMsg);
+        try {
+            await fetch(
+                '/api/update-pool/new', 
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ msg })
+                }
+            );
+        } catch (error) {
+            console.error(`Error adding message to update pool: ${error}`);
+        }
 
         creationForm.reset();
+        window.location.reload();
 
     } catch (error) {
         alert('Something happened while we were creating the envelope. This is on our side, not yours. Please try again.');
     }
 });
 
-
-// Envelope category
-const envelopeCategoryMsg = document.querySelector('#envelope-category-msg').textContent.trim();
-
-
+// Find a way to submit the search bar form via javascript directly
 // Update envelopes
 const updateForm = document.querySelector('#update-amount-form');
 
 updateForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const category = encodeURIComponent(envelopeCategoryMsg);
-    const amount = document.querySelector('#update-amount-form #amount').value;
+    const envelopeCategoryMsg = document.querySelector('#envelope-category-msg').textContent.trim();
+    const category = encodeURIComponent(envelopeCategoryMsg.toLowerCase());
+    
+    const amount = updateForm.querySelector('#amount').value;
 
     try {
         const response = await fetch(
@@ -253,23 +207,30 @@ updateForm.addEventListener('submit', async (event) => {
             }
         );
 
-        const updatedEnvelope = await response.json();
-
-        const updatePool = document.querySelector('#pool');
-        const updatePoolMsg = document.createElement('p');
+        const responseMsg = await response.json();
+        const msg = responseMsg['msg'];
 
         if (!response.ok) {
-            alert(`Error: ${updatedEnvelope['error']}!`);
-
-            updatePoolMsg.textContent = `Update envelope error: ${updatedEnvelope['error']}. Please try again!`;
-            updatePool.appendChild(updatePoolMsg);
-            return;
+            alert(`Error: ${msg}!`);
         }
 
-        updatePoolMsg.textContent = `Your newly updated '${envelopeCategoryMsg}' envelope!:<br>${updatedEnvelope}`;
-        updatePool.appendChild(updatePoolMsg);
+        try {
+            await fetch(
+                '/api/update-pool/new',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ msg })
+                }
+            );
+        } catch (error) {
+            console.error(`Error adding message to update pool: ${error}`);
+        }
 
         updateForm.reset();
+        showEnvelopePage(envelopeCategoryMsg);
 
     } catch (error) {
         alert('Something happened while we were updating the envelope. This is on our side, not yours. Please try again.');
@@ -282,7 +243,9 @@ const subtractForm = document.querySelector('#subtract-amount-form');
 subtractForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const category = encodeURIComponent(envelopeCategoryMsg);
+    const envelopeCategoryMsg = document.querySelector('#envelope-category-msg').textContent.trim();
+    const category = encodeURIComponent(envelopeCategoryMsg.toLowerCase());
+
     const amountToSubtract = document.querySelector('#subtract-amount-form #amount').value;
 
     try {
@@ -297,23 +260,30 @@ subtractForm.addEventListener('submit', async (event) => {
             }
         );
 
-        const updatedEnvelope = await response.json();
-
-        const updatePool = document.querySelector('#pool');
-        const updatePoolMsg = document.createElement('p');
+        const responseMsg = await response.json();
+        const msg = responseMsg['msg'];
 
         if (!response.ok) {
-            alert(`Error: ${updatedEnvelope['error']}!`);
-
-            updatePoolMsg.textContent = `Subtracting funds from envelope error: ${updatedEnvelope['error']}. Please try again!`;
-            updatePool.appendChild(updatePoolMsg);
-            return;
+            alert(`Error: ${msg}!`);
         }
 
-        updatePoolMsg.textContent = `Your newly updated '${envelopeCategoryMsg}' envelope!:<br>${updatedEnvelope}`;
-        updatePool.appendChild(updatePoolMsg);
+        try {
+            await fetch(
+                '/api/update-pool/new',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ msg })
+                }
+            );
+        } catch (error) {
+            console.error(`Error adding message to update pool: ${error}`);
+        }
 
         subtractForm.reset();
+        showEnvelopePage(envelopeCategoryMsg);
 
     } catch (error) {
         alert('Something happened while we were updating the envelope. This is on our side, not yours. Please try again.');
@@ -342,23 +312,30 @@ transferForm.addEventListener('submit', async (event) => {
             }
         );
 
-        const envelopes = await response.json();
-
-        const updatePool = document.querySelector('#pool');
-        const updatePoolMsg = document.createElement('p');
+        const responseMsg = await response.json();
+        const msg = responseMsg['msg'];
 
         if (!response.ok) {
-            alert(`Error: ${envelopes['error']}!`);
-
-            updatePoolMsg.textContent = `Transferring funds error: ${envelopes['error']}. Please try again!`;
-            updatePool.appendChild(updatePoolMsg);
-            return;
+            alert(`Error: ${msg}!`);
         }
 
-        updatePoolMsg.textContent = `Transfer amount:<br>${amountToTransfer}<br>From envelope:<br>${envelopes['envelopeFrom']}<br>To envelope:<br>${envelopes['envelopeTo']}`;
-        updatePool.appendChild(updatePoolMsg);
+        try {
+            await fetch(
+                '/api/update-pool/new',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ msg })
+                }
+            );
+        } catch (error) {
+            console.error(`Error adding message to update pool: ${error}`);
+        }
 
         transferForm.reset();
+        window.location.reload();
 
     } catch (error) {
         alert('Something happened while we were updating the envelope. This is on our side, not yours. Please try again.');
@@ -372,33 +349,163 @@ const deleteEnvelopeButton = document.querySelector('#delete-envelope-button');
 deleteEnvelopeButton.addEventListener('click', async () => {
     const confirmDeletion = confirm('Last chance! Are you sure you want to delete this envelope? This action cannot be undone.');
 
-    const updatePool = document.querySelector('#pool');
-    const updatePoolMsg = document.createElement('p');
+    const envelopeCategoryMsg = document.querySelector('#envelope-category-msg').textContent.trim();
+    const category = encodeURIComponent(envelopeCategoryMsg.toLowerCase());
 
     if (confirmDeletion) {
         try {
-            const category = encodeURIComponent(envelopeCategoryMsg);
+            const response = await fetch(
+                `/api/envelope/${category}/delete`,
+                {method: 'DELETE'}
+            );
 
-            const response = await fetch(`/api/envelope/${category}/delete`);
-            const deleteMsg = response.json();
+            const responseMsg = await response.json();
+            const msg = responseMsg['msg'];
 
             if (!response.ok) {
-                alert(`Error: ${deleteMsg['error']}!`);
-
-                updatePoolMsg.textContent = `Deleting envelope error: ${deleteMsg['error']}. Please try again!`;
-                updatePool.appendChild(updatePoolMsg);
-                return;
+                alert(`Error: ${msg}!`);
             }
 
-            updatePoolMsg.textContent = `Your '${envelopeCategoryMsg}' envelope has successfully been deleted!`;
-            updatePool.appendChild(updatePoolMsg);
+            try {
+                await fetch(
+                    '/api/update-pool/new',
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ msg })
+                    }
+                );
+            } catch (error) {
+                console.error(`Error adding message to update pool: ${error}`);
+            }
+
+            window.location.href = '/';
 
         } catch (error) {
             alert('Something happened while we were deleting the envelope. This is on our side, not yours. Please try again.');
         }
 
     } else {
-        updatePoolMsg.textContent = `Your '${envelopeCategoryMsg}' envelope has not been deleted.`;
-        updatePool.appendChild(updatePoolMsg);
+        try {
+            await fetch(
+                '/api/update-pool/new',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ msg: `Deletion for ${envelopeCategoryMsg} envelope was cancelled.` })
+                }
+            );
+        } catch (error) {
+            console.error(`Error adding message to update pool: ${error}`);
+        }
     }
 });
+
+
+// Update pool
+const displayUpdatePool = async () => {
+    try {
+        const response = await fetch('/api/update-pool/all');
+        const updatePool = await response.json();
+
+        if (!response.ok) {
+            alert(`Oops! ${updatePool['error']}!`);
+            return;
+        }
+
+        const updatePoolDiv = document.querySelector('#update-pool');
+        updatePoolDiv.innerHTML = '';
+
+        for (let i=updatePool.length - 1; i>=0; i--) {
+            const p = document.createElement('p');
+            p.textContent = updatePool[i];
+            updatePoolDiv.appendChild(p);
+        }
+
+    } catch (error) {
+        alert('Something happened while we were updating the pool. This is on our side, not yours. Please try again.');
+    }
+}
+
+
+// Helper functions
+const showPage = (pageToShow) => {
+    const pagesToHide = document.querySelectorAll('.page');
+
+    pagesToHide.forEach((page) => {
+        page.classList.remove('active');
+    });
+
+    pageToShow.classList.add('active');
+};
+
+const enterTableInfo = (envelope, thead, tbody) => {
+    thead.innerHTML = '';
+    tbody.innerHTML = '';
+
+    const headers = Object.keys(envelope);
+    
+    const headerRow = document.createElement('tr');
+    headers.forEach((header) => {
+        const th = document.createElement('th');
+        th.textContent = header;
+        headerRow.appendChild(th);
+    });
+
+    thead.appendChild(headerRow);
+
+    const row = document.createElement('tr');
+    headers.forEach((header) => {
+        const cell = document.createElement('td');
+        cell.textContent = envelope[header];
+        row.appendChild(cell);
+    });
+
+    tbody.appendChild(row);
+};
+
+const fetchEnvelope = async (category, thead, tbody, envelopePage) => {
+    try {
+        const response = await fetch(`/api/envelope/${encodeURIComponent(category).toLowerCase()}`);
+        const envelope = await response.json();
+
+        if (!response.ok) {
+            showPage(envelopePage);
+
+            envelopeCategoryMsg.textContent = `${envelope['msg']}. Perhaps you made a typo?`;
+
+            thead.innerHTML = '';
+            tbody.innerHTML = '';
+
+            document.querySelector('#update-amount-container').style.display = 'none';
+            document.querySelector('#subtract-amount-container').style.display = 'none';
+            document.querySelector('#danger-zone').style.display = 'none';
+
+            return;
+        }
+
+        document.querySelector('#update-amount-container').style.display = 'block';
+        document.querySelector('#subtract-amount-container').style.display = 'block';
+        document.querySelector('#danger-zone').style.display = 'block';
+
+        return envelope;
+
+    } catch (error) {
+        alert('Something happened while we were fetching the envelope. This is on our side, not yours. Please try again.');
+    }
+};
+
+const showEnvelopePage = async (category) => {
+    const table = document.querySelector('#envelope-single-table');
+    const thead = table.querySelector('thead');
+    const tbody = table.querySelector('tbody');
+    const envelopePage = document.querySelector('#about-envelope-single');
+
+    showPage(envelopePage);
+    const envelope = await fetchEnvelope(category, thead, tbody, envelopePage);
+    enterTableInfo(envelope, thead, tbody);
+};

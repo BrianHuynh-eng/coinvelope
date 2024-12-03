@@ -22,43 +22,54 @@
             </div>
         </div>
 
-        <h2>Your envelopes</h2>
-        <div id="envelopes-all">
-            <div id="envelopes-container">
-                <table id="envelopes-table">
-                    <thead></thead>
-                    <tbody></tbody>
-                </table>
+        <div id="envelopes-all-container">
+            <h2>Your envelopes</h2>
+            <div id="envelopes-all">
+                <div id="envelopes-container">
+                    <table id="envelopes-table">
+                        <thead></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
-        <h3>Create a new envelope</h3>
-        <div id="envelope-creation">
-            <form id="envelope-creation-form">
-                <label for="category">What will be your new envelope's category?</label>
-                <input type="text" id="category" name="category" required />
+        <div id="envelope-creation-container">
+            <h3>Create a new envelope</h3>
+            <div id="envelope-creation">
+                <form id="envelope-creation-form">
+                    <label for="category">What will be your new envelope's category?</label>
+                    <input type="text" id="category" name="category" required />
 
-                <label for="amount">How much will you spend per month in this category?<br><span>Think wisely!</span></label>
-                <input type="number" id="amount" name="amount" required />
+                    <label for="amount">How much will you spend per month in this category?<br><span>Think wisely!</span></label>
+                    <input type="number" id="amount" name="amount" required />
 
-                <button type="submit">Create envelope</button>
-            </form>
+                    <button type="submit">Create envelope</button>
+                </form>
+            </div>
         </div>
 
-        <h3>Transfer funds between envelopes</h3>
-        <div id="transfer-funds">
-            <form id="transfer-funds-form">
-                <label for="categoryFrom">What envelope do you want to take money from?</label>
-                <input type="text" id="categoryFrom" name="categoryFrom" placeholder="Enter the envelope's category" required />
+        <div id="transfer-funds-container">
+            <h3>Transfer funds between envelopes</h3>
+            <div id="transfer-funds">
+                <form id="transfer-funds-form">
+                    <label for="categoryFrom">What envelope do you want to take money from?</label>
+                    <input type="text" id="categoryFrom" name="categoryFrom" placeholder="Enter the envelope's category" required />
 
-                <label for="categoryTo">What envelope do you want to transfer that money to?</label>
-                <input type="text" id="categoryTo" name="categoryTo" placeholder="Enter the envelope's category" required />
+                    <label for="categoryTo">What envelope do you want to transfer that money to?</label>
+                    <input type="text" id="categoryTo" name="categoryTo" placeholder="Enter the envelope's category" required />
 
-                <label for="amount">How much money will be transfered?</label>
-                <input type="number" id="amount" name="amount" required />
+                    <label for="amount">How much money will be transfered?</label>
+                    <input type="number" id="amount" name="amount" required />
 
-                <button type="submit">Transfer funds</button>
-            </form>
+                    <button type="submit">Transfer funds</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="update-pool-container">
+            <h4>Logging/results/updates pool</h4> 
+            <div id="update-pool"></div>
         </div>
     </div>
 
@@ -87,24 +98,28 @@
             </div>
         </div>
 
-        <h3>Update $ amount</h3>
-        <div id="update-amount">
-            <form id="update-amount-form">
-                <label for="amount">How much will you spend <i>now</i> per month in this category?<br><span>Think wisely!</span></label>
-                <input type="number" id="amount" name="amount" required />
+        <div id="update-amount-container">
+            <h3>Update $ amount</h3>
+            <div id="update-amount">
+                <form id="update-amount-form">
+                    <label for="amount">How much will you spend <i>now</i> per month in this category?<br><span>Think wisely!</span></label>
+                    <input type="number" id="amount" name="amount" required />
 
-                <button type="submit">Update amount</button>
-            </form>
+                    <button type="submit">Update amount</button>
+                </form>
+            </div>
         </div>
 
-        <h3>Track spending & subtract amount</h3>
-        <div id="subtract-amount">
-            <form id="subtract-amount-form">
-                <label for="amount">Enter the $ value of your purchase/payment in this category</label>
-                <input type="number" id="amount" name="amount" required />
+        <div id="subtract-amount-container">
+            <h3>Track spending & subtract amount</h3>
+            <div id="subtract-amount">
+                <form id="subtract-amount-form">
+                    <label for="amount">Enter the $ value of your purchase/payment in this category</label>
+                    <input type="number" id="amount" name="amount" required />
 
-                <button type="submit">Subtract amount</button>
-            </form>
+                    <button type="submit">Subtract amount</button>
+                </form>
+            </div>
         </div>
 
         <div id="danger-zone">
@@ -113,10 +128,6 @@
             <button id="delete-envelope-button">Delete envelope</button>
         </div>
     </div>
-
-    <!-- All of the following below should be visible all the time -->
-    <h4>Logging/results/updates pool</h4> 
-    <div id="pool"></div>
 
     <footer id="footer">
         <p>Mock startup company / experiment / mini-project by <a href="https://github.com/BrianHuynh-eng" target="_blank">B.H.</a></p>
