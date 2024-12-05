@@ -11,48 +11,49 @@
 
   <body>
     <div id="about-envelope-all" class="page active">
-        <h1>Coinvelope helps people get their spending right</h1>
+        <h1 id="title">Coinvelope® helps people get their <span class="green splash">spending</span> right.</h1>
+        <h1 id="title-two">Coinvelope®</h1>
+
+        <div id="note-about-envelope-budgeting-container">
+            <p id="note-about-envelope-budgeting">To kickstart your budgeting journey, create an envelope below, with spending <span class="green splash bold">category</span> names and allocated <span class="green splash bold">budget</span> amounts for each, such as an envelope labeled 'Groceries' with a $200 monthly budget. Envelope budgeting is a straightforward yet powerful method that offers <span class="green splash bold">visual</span> control by dividing your <span class="green splash bold">expenses</span> into <span class="green splash bold">categories</span>, making it easier to track and stick to your budget. Unlike traditional methods that rely on percentages of your income, envelope budgeting <span class="green splash bold">enforces</span> spending limits, preventing overspending once the money in a particular envelope is gone. This customizable approach allows you to tailor categories like 'Rent,' 'Utilities,' 'Entertainment,' and 'Savings' to fit your specific financial needs, promoting financial discipline and helping you stay within your means. For example, consider envelopes for 'Groceries' ($200), 'Rent' ($1,500), 'Utilities' ($150), 'Entertainment' ($300), 'Transportation' ($500), 'Savings' ($500), and 'Health & Wellness' ($100). This makes envelope budgeting more <span class="green splash bold">"applied"</span> and <span class="green splash bold">"tangible"</span> than the traditional method. By using this system, you gain better control over your finances, ensure you stay within your budget, and make conscious spending decisions, ultimately fostering a <span class="green splash bold">healthier</span> financial mindset. Create envelopes below to start budgeting!</p>
+        </div>
 
         <div id="search-container">
-            <div id="search-bar">
-                <form id="search-form">
-                    <input type="text" id="category-search" name="category-search" placeholder="Envelope Search: Enter a category" />
-                    <button type="submit">🔍 Search</button>
-                </form>
+            <form id="search-form">
+                <input type="text" id="category-search" name="category-search" placeholder="Envelope Search" />
+                <button type="submit">🔍</button>
+            </form>
+        </div>
+
+        <div class="envelopes-table-container-outer">
+            <h2 id="your-envelopes-title">Your envelopes</h2>
+            <div class="envelopes-table-container-inner">
+                <table id="envelopes-table" class="envelopes-table-class">
+                    <thead></thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </div>
 
-        <div id="envelopes-all-container">
-            <h2>Your envelopes</h2>
-            <div id="envelopes-all">
-                <div id="envelopes-container">
-                    <table id="envelopes-table">
-                        <thead></thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div id="envelope-creation-container">
-            <h3>Create a new envelope</h3>
-            <div id="envelope-creation">
-                <form id="envelope-creation-form">
+        <div id="envelope-creation-container" class="container">
+            <h3 class="section-title">Create a new envelope</h3>
+            <div class="form-container">
+                <form id="envelope-creation-form" class="form">
                     <label for="category">What will be your new envelope's category?</label>
                     <input type="text" id="category" name="category" required />
 
-                    <label for="amount">How much will you spend per month in this category?<br><span>Think wisely!</span></label>
+                    <label for="amount">How much will you spend per month in this category?<br><span class="bold">Think wisely!</span></label>
                     <input type="number" id="amount" name="amount" required />
 
-                    <button type="submit">Create envelope</button>
+                    <button type="submit">Create Envelope</button>
                 </form>
             </div>
         </div>
 
-        <div id="transfer-funds-container">
-            <h3>Transfer funds between envelopes</h3>
-            <div id="transfer-funds">
-                <form id="transfer-funds-form">
+        <div id="transfer-funds-container" class="container">
+            <h3 class="section-title">Transfer funds between envelopes</h3>
+            <div class="form-container">
+                <form id="transfer-funds-form" class="form">
                     <label for="categoryFrom">What envelope do you want to take money from?</label>
                     <input type="text" id="categoryFrom" name="categoryFrom" placeholder="Enter the envelope's category" required />
 
@@ -72,36 +73,34 @@
             <div id="update-pool"></div>
         </div>
     </div>
-
+<!-- continue -->
     <div id="about-envelope-single" class="page">
         <div id="return-to-home">
             <button type="button" id="return-to-home-button">Return to home</button>
         </div>
 
         <div id="search-container">
-            <div id="search-bar">
-                <form id="search-form">
-                    <input type="text" id="category-search" name="category-search" placeholder="Search for another envelope category" />
-                    <button type="submit">🔍 Search</button>
-                </form>
-            </div>
+            <form id="search-form">
+                <input type="text" id="category-search" name="category-search" placeholder="Search for another envelope category" />
+                <button type="submit">🔍</button>
+            </form>
         </div>
 
         <h1 id="envelope-category-msg"></h1>
 
-        <div id="envelope-single">
-            <div id="envelope-single-container">
-                <table id="envelope-single-table">
+        <div class="envelopes-table-container-outer">
+            <div class="envelopes-table-container-inner">
+                <table id="envelope-single-table" class="envelopes-table-class">
                     <thead></thead>
                     <tbody></tbody>
                 </table>
             </div>
         </div>
 
-        <div id="update-amount-container">
-            <h3>Update $ amount</h3>
-            <div id="update-amount">
-                <form id="update-amount-form">
+        <div id="update-amount-container" class="container">
+            <h3 class="section-title">Update $ amount</h3>
+            <div class="form-container">
+                <form id="update-amount-form" class="form">
                     <label for="amount">How much will you spend <i>now</i> per month in this category?<br><span>Think wisely!</span></label>
                     <input type="number" id="amount" name="amount" required />
 
@@ -110,10 +109,10 @@
             </div>
         </div>
 
-        <div id="subtract-amount-container">
-            <h3>Track spending & subtract amount</h3>
-            <div id="subtract-amount">
-                <form id="subtract-amount-form">
+        <div id="subtract-amount-container" class="container">
+            <h3 class="section-title">Track spending & subtract amount</h3>
+            <div class="form-container">
+                <form id="subtract-amount-form" class="form">
                     <label for="amount">Enter the $ value of your purchase/payment in this category</label>
                     <input type="number" id="amount" name="amount" required />
 

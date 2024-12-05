@@ -12,14 +12,26 @@ const displayAllEnvelopes = async () => {
         const envelopes = await response.json();
 
         if (!response.ok) {
-            const envelopesContainer = document.querySelector('#envelopes-container');
-            const noEnvelopesMsg = document.createElement('p');
-
-            noEnvelopesMsg.textContent = `${envelopes['msg']}! Where are the envelopes? Starting creating some below!`;
-            envelopesContainer.appendChild(noEnvelopesMsg);
+            document.querySelector('#title').style.display = 'block';
+            document.querySelector('#title-two').style.display = 'none';
+            document.querySelector('#note-about-envelope-budgeting').style.display = 'block';
+            document.querySelector('html').style.padding = '100px';
+            document.querySelector('#search-container').style.display = 'none';
+            document.querySelector('.envelopes-table-container-outer').style.display = 'none';
+            document.querySelector('#transfer-funds-container').style.display = 'none';
+            document.querySelector('#update-pool-container').style.display = 'none';
 
             return;
         }
+
+        document.querySelector('#title').style.display = 'none';
+        document.querySelector('#title-two').style.display = 'block';
+        document.querySelector('#note-about-envelope-budgeting').style.display = 'none';
+        document.querySelector('html').style.padding = '25px 100px';
+        document.querySelector('#search-container').style.display = 'block';
+        document.querySelector('.envelopes-table-container-outer').style.display = 'block';
+        document.querySelector('#transfer-funds-container').style.display = 'block';
+        document.querySelector('#update-pool-container').style.display = 'block';
 
         const table = document.querySelector('#envelopes-table');
         const thead = table.querySelector('thead');
@@ -44,7 +56,13 @@ const displayAllEnvelopes = async () => {
 
             headers.forEach((header) => {
                 const cell = document.createElement('td');
-                cell.textContent = envelope[header];
+
+                if (header === 'amount') {
+                    cell.textContent = `$${envelope[header]}`;
+                } else {
+                    cell.textContent = envelope[header];
+                }
+
                 row.appendChild(cell);
             });
 
@@ -138,7 +156,7 @@ const creationForm = document.querySelector('#envelope-creation-form');
 creationForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const category = creationForm.querySelector('#category').value;
+    const category = creationForm.querySelector('#category').value.trim();
     const amount = creationForm.querySelector('#amount').value;
 
     try {
@@ -296,8 +314,8 @@ const transferForm = document.querySelector('#transfer-funds-form');
 transferForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const categoryFrom = document.querySelector('#transfer-funds-form #categoryFrom').value;
-    const categoryTo = document.querySelector('#transfer-funds-form #categoryTo').value;
+    const categoryFrom = document.querySelector('#transfer-funds-form #categoryFrom').value.trim();
+    const categoryTo = document.querySelector('#transfer-funds-form #categoryTo').value.trim();
     const amountToTransfer = document.querySelector('#transfer-funds-form #amount').value;
 
     try {
@@ -396,7 +414,7 @@ deleteEnvelopeButton.addEventListener('click', async () => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ msg: `Deletion for ${envelopeCategoryMsg} envelope was cancelled.` })
+                    body: JSON.stringify({ msg: `Deletion for "${envelopeCategoryMsg}" envelope was cancelled` })
                 }
             );
         } catch (error) {
@@ -466,7 +484,13 @@ const enterTableInfo = (envelope, thead, tbody) => {
     const row = document.createElement('tr');
     headers.forEach((header) => {
         const cell = document.createElement('td');
-        cell.textContent = envelope[header];
+
+        if (header === 'amount') {
+            cell.textContent = `$${envelope[header]}`;
+        } else {
+            cell.textContent = envelope[header];
+        }
+
         row.appendChild(cell);
     });
 
@@ -474,6 +498,10 @@ const enterTableInfo = (envelope, thead, tbody) => {
 };
 
 const fetchEnvelope = async (category, thead, tbody, envelopePage, envelopeCategoryMsg) => {
+    if (category.trim() === "") {
+        return;
+    }
+
     try {
         const response = await fetch(`/api/envelope/${encodeURIComponent(category.toLowerCase())}`);
         const envelope = await response.json();
@@ -481,7 +509,7 @@ const fetchEnvelope = async (category, thead, tbody, envelopePage, envelopeCateg
         if (!response.ok) {
             showPage(envelopePage);
 
-            envelopeCategoryMsg.textContent = `'${category}' ${envelope['msg'].toLowerCase()}! Perhaps you made a typo?`;
+            envelopeCategoryMsg.textContent = `${envelope['msg']}! Your search '${category}' has no matches. Perhaps you made a typo?`;
 
             thead.innerHTML = '';
             tbody.innerHTML = '';
