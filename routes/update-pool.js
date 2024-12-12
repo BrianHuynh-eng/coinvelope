@@ -8,7 +8,7 @@ updatePoolRouter.get('/all', (req, res) => {
     if (updatePool.length !== 0) {
         res.status(200).json(updatePool);
     } else {
-        res.status(404).json({error: 'No updates found yet! Start budgeting now and create some envelopes!'});
+        res.status(404).json({error: 'No updates found yet! Start budgeting now and create some envelopes'});
     }
 });
 

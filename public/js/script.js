@@ -1,37 +1,40 @@
 document.addEventListener('DOMContentLoaded', () => {
+    checkState();
     displayAllEnvelopes();
-    displaySingleEnvelope();
+    displayBudgetingPower();
+    displayTotalBalance();
     displayUpdatePool();
+    displayRandomEnvelopeSuggestion();
 });
 
 
-// Read envelope(s)
+const checkState = async () => {
+    const isDashboard = localStorage.getItem('isDashboard');
+
+    if (isDashboard === 'true') {
+        document.querySelector('#homepage').style.display = 'none';
+        document.querySelector('#dashboard').style.display = 'block';
+    } else {
+        document.querySelector('#homepage').style.display = 'block';
+        document.querySelector('#dashboard').style.display = 'none';
+    }
+};
+
+
+// Read all envelopes
 const displayAllEnvelopes = async () => {
     try {
         const response = await fetch('/api/envelope/all');
-        const envelopes = await response.json();
+        const responseEnvelopes = await response.json();
 
         if (!response.ok) {
-            document.querySelector('#title').style.display = 'block';
-            document.querySelector('#title-two').style.display = 'none';
-            document.querySelector('#note-about-envelope-budgeting').style.display = 'block';
-            document.querySelector('html').style.padding = '100px';
-            document.querySelector('#search-container').style.display = 'none';
-            document.querySelector('.envelopes-table-container-outer').style.display = 'none';
-            document.querySelector('#transfer-funds-container').style.display = 'none';
-            document.querySelector('#update-pool-container').style.display = 'none';
-
+            document.querySelector('#no-envelope-msg').textContent = `${responseEnvelopes['msg']}! Create an envelope to get started budgeting!`;
             return;
         }
 
-        document.querySelector('#title').style.display = 'none';
-        document.querySelector('#title-two').style.display = 'block';
-        document.querySelector('#note-about-envelope-budgeting').style.display = 'none';
-        document.querySelector('html').style.padding = '25px 100px';
-        document.querySelector('#search-container').style.display = 'block';
-        document.querySelector('.envelopes-table-container-outer').style.display = 'block';
-        document.querySelector('#transfer-funds-container').style.display = 'block';
-        document.querySelector('#update-pool-container').style.display = 'block';
+        const envelopes = responseEnvelopes['envelopes'];
+
+        document.querySelector('#no-envelope-msg').display = 'none';
 
         const table = document.querySelector('#envelopes-table');
         const thead = table.querySelector('thead');
@@ -74,80 +77,205 @@ const displayAllEnvelopes = async () => {
 };
 
 
-const displaySingleEnvelope = async () => {
-    const mainPage = document.querySelector('#about-envelope-all');
-    const envelopePage = document.querySelector('#about-envelope-single');
-    const searchForms = document.querySelectorAll('#search-form');
-    const envelopeCategoryMsg = document.querySelector('#envelope-category-msg');
+// Read budgeting information 
+const displayBudgetingPower = async () => {
+    try {
+        const response = await fetch('/api/envelope/budgeting-power');
+        const responseBudgetingPower = await response.json();
+        const budgetingPower = responseBudgetingPower['budgetingPower'];
 
-    const table = document.querySelector('#envelope-single-table');
-    const thead = table.querySelector('thead');
-    const tbody = table.querySelector('tbody');
+        const budgetingPowerP = document.querySelector('#budgeting-power');
+        budgetingPowerP.textContent = `$${budgetingPower}`;
 
-    const navigateToEnvelope = (envelope) => {
-        const category = envelope['category'].trim();
-
-        showPage(envelopePage);
-        envelopeCategoryMsg.textContent = category;
-        enterTableInfo(envelope, thead, tbody);
-
-        history.pushState(
-            {page: 'envelope', category: category},
-            '',
-            `/api/envelope/${encodeURIComponent(category)}`
-        );
-    };
-
-    const navigateToMain = () => {
-        showPage(mainPage);
-
-        history.pushState(
-            {page: 'main'},
-            '',
-            '/'
-        );
-    };
-
-    searchForms.forEach((form) => {
-        form.addEventListener('submit', async (event) => {
-            event.preventDefault();
-
-            const searchInput = event.target.querySelector('#category-search');
-            const category = searchInput.value.trim();
-            const envelope = await fetchEnvelope(category, thead, tbody, envelopePage, envelopeCategoryMsg);
-
-            navigateToEnvelope(envelope);
-            searchInput.value = '';
-        });
-    });
-
-    window.addEventListener('popstate', async (event) => {
-        if (event.state) {
-            if (event.state.page === 'envelope') {
-                showPage(envelopePage);
-                envelopeCategoryMsg.textContent = event.state.category.trim();
-                enterTableInfo(await fetchEnvelope(event.state.category.trim()));
-            } else {
-                showPage(mainPage);
-            }
-        } else {
-            showPage(mainPage);
-        }
-    });
-
-    const initializePage = async () => {
-        const path = window.location.pathname;
-
-        if (path.startsWith('/envelope/')) {
-            const category = decodeURIComponent(path.replace('/envelope/', ''));
-            navigateToEnvelope(await fetchEnvelope(category));
-        } else {
-            navigateToMain();
-        }
-    };
-
-    initializePage();
+    } catch (error) {
+        alert('Something happened while we were fetching the Budgeting Power. This is on our side, not yours. Please try again.');
+    }
 };
+
+
+const displayTotalBalance = async () => {
+    try {
+        const response = await fetch('/api/envelope/total-balance');
+        const responseTotalBalance = await response.json();
+        const totalBalance = responseTotalBalance['totalBalance'];
+
+        const totalBalanceP = document.querySelector('#total-balance');
+        totalBalanceP.textContent = `$${totalBalance}`;
+
+    } catch (error) {
+        alert('Something happened while we were fetching the total balance. This is on our side, not yours. Please try again.');
+    }
+};
+
+
+// Read updates
+const displayUpdatePool = async () => {
+    try {
+        const response = await fetch('/api/update-pool/all');
+        const updatePool = await response.json();
+
+        const updatePoolDiv = document.querySelector('#update-pool');
+        updatePoolDiv.innerHTML = '';
+
+        for (let i=updatePool.length - 1; i>=0; i--) {
+            const p = document.createElement('p');
+            p.textContent = updatePool[i];
+            updatePoolDiv.appendChild(p);
+        }
+
+    } catch (error) {
+        alert('Something happened while we were updating the pool. This is on our side, not yours. Please try again.');
+    }
+};
+
+
+// Read random envelope
+const displayRandomEnvelopeSuggestion = async () => {
+    try {
+        const response = await fetch('/api/envelope/all');
+        const responseEnvelopes = await response.json();
+
+        if (!response.ok || responseEnvelopes['envelopes'].length < 2) {
+            document.querySelector('#category-from').placeholder = 'Create an envelope first!';
+            document.querySelector('#category-to').placeholder = 'You need at least two envelopes!';
+            document.querySelector('#transfer-amount').placeholder = 'P.S. Happy budgeting!';
+
+            return;
+        }
+
+        const envelopes = responseEnvelopes['envelopes'];
+
+        let randomEnvelopeOne = null;
+        let randomEnvelopeTwo = null;
+
+        while (randomEnvelopeOne === randomEnvelopeTwo) {
+            randomEnvelopeOne = envelopes[Math.floor(Math.random() * envelopes.length)];
+            randomEnvelopeTwo = envelopes[Math.floor(Math.random() * envelopes.length)];
+        }
+
+        document.querySelector('#category-from').placeholder = `Perhaps ${randomEnvelopeOne['category']}?`;
+        document.querySelector('#category-to').placeholder = `How about ${randomEnvelopeTwo['category']}?`;
+        document.querySelector('#transfer-amount').placeholder = '1500, 50, 700, etc.';
+        
+    } catch (error) {
+        alert('Something happened while we were fetching the random envelope. This is on our side, not yours. Please try again.');
+    }
+};
+
+
+// Read single envelope
+const dashboardSearchForm = document.querySelector('#dashboard-search-form');
+
+dashboardSearchForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const searchedCategory = dashboardSearchForm.querySelector('#dashboard-search-category').value.trim();
+    const category = encodeURIComponent(searchedCategory.toLowerCase());
+
+    if (searchedCategory === '') {
+        return;
+    }
+
+    document.querySelector('#dashboard').style.display = 'none';
+    document.querySelector('#search-results-page').style.display = 'block';
+
+    try {
+        const response = await fetch(`/api/envelope/${category}`);
+        const responseEnvelope = await response.json();
+
+        if (!response.ok) {
+            document.querySelector('#search-results-search-category').value = searchedCategory;
+
+            const searchResultsTitle = document.querySelector('#search-results-title')
+            searchResultsTitle.textContent = `${responseEnvelope['msg']}! Your search '${searchedCategory}' has no matches. Perhaps you made a typo?`;
+            searchResultsTitle.style.fontSize = '100px';
+            searchResultsTitle.style.margin = '0px';
+            searchResultsTitle.style.padding = '0px';
+
+            document.querySelector('#envelope-information-container').style.display = 'none';
+            document.querySelectorAll('#search-results-page .container').forEach((container) => {
+                container.style.display = 'none';
+            });
+            document.querySelector('#danger-zone').style.display = 'none';
+
+            return;
+        }
+
+        const envelope = responseEnvelope['envelope'];
+
+        document.querySelector('#dashboard-search-category').value = searchedCategory;
+        document.querySelector('#search-results-search-category').value = searchedCategory;
+
+        const searchResultsTitle = document.querySelector('#search-results-title')
+        searchResultsTitle.textContent = envelope['category'];
+        searchResultsTitle.style.fontSize = '50px';
+
+        document.querySelector('#envelope-information-container').style.display = 'block';
+        document.querySelector('#current-balance').textContent = `$${envelope['amount']}`;
+        document.querySelectorAll('#search-results-page .container').forEach((container) => {
+            container.style.display = 'block';
+        });
+        document.querySelector('#danger-zone').style.display = 'block';
+
+    } catch (error) {
+        alert('Something happened while we were searching for the envelope. This is on our side, not yours. Please try again.');
+    }
+});
+
+
+const searchResultsSearchForm = document.querySelector('#search-results-search-form');
+
+searchResultsSearchForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const searchedCategory = searchResultsSearchForm.querySelector('#search-results-search-category').value.trim();
+    const category = encodeURIComponent(searchedCategory.toLowerCase());
+
+    if (searchedCategory === '') {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/envelope/${category}`);
+        const responseEnvelope = await response.json();
+
+        if (!response.ok) {
+            document.querySelector('#search-results-search-category').value = searchedCategory;
+
+            const searchResultsTitle = document.querySelector('#search-results-title')
+            searchResultsTitle.textContent = `${responseEnvelope['msg']}! Your search '${searchedCategory}' has no matches. Perhaps you made a typo?`;
+            searchResultsTitle.style.fontSize = '100px';
+            searchResultsTitle.style.margin = '0px';
+            searchResultsTitle.style.padding = '0px';
+
+            document.querySelector('#envelope-information-container').style.display = 'none';
+            document.querySelectorAll('#search-results-page .container').forEach((container) => {
+                container.style.display = 'none';
+            });
+            document.querySelector('#danger-zone').style.display = 'none';
+
+            return;
+        }
+
+        const envelope = responseEnvelope['envelope'];
+
+        document.querySelector('#search-results-search-category').value = searchedCategory;
+
+        const searchResultsTitle = document.querySelector('#search-results-title')
+        searchResultsTitle.textContent = envelope['category'];
+        searchResultsTitle.style.fontSize = '50px';
+
+        document.querySelector('#envelope-information-container').style.display = 'block';
+        document.querySelector('#current-balance').textContent = `$${envelope['amount']}`;
+        document.querySelectorAll('#search-results-page .container').forEach((container) => {
+            container.style.display = 'block';
+        });
+        document.querySelector('#danger-zone').style.display = 'block';
+
+    } catch (error) {
+        alert('Something happened while we were searching for the envelope. This is on our side, not yours. Please try again.');
+    }
+});
 
 
 // Create envelopes
@@ -156,8 +284,8 @@ const creationForm = document.querySelector('#envelope-creation-form');
 creationForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const category = creationForm.querySelector('#category').value.trim();
-    const amount = creationForm.querySelector('#amount').value;
+    const category = creationForm.querySelector('#creation-category').value.trim();
+    const amount = creationForm.querySelector('#creation-amount').value;
 
     try {
         const response = await fetch(
@@ -177,6 +305,8 @@ creationForm.addEventListener('submit', async (event) => {
         if (!response.ok) {
             alert(`Error: ${msg}!`);
         }
+
+        document.querySelector('#no-envelope-msg').style.display = 'none';
 
         try {
             await fetch(
@@ -202,16 +332,71 @@ creationForm.addEventListener('submit', async (event) => {
 });
 
 
+// Monthly income input
+const incomeForm = document.querySelector('#income-input-form');
+
+incomeForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const monthlyIncome = incomeForm.querySelector('#income').value;
+
+    try {
+        const response = await fetch(
+            `/api/envelope/income`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ monthlyIncome })
+            }
+        );
+
+        const responseMsg = await response.json();
+        const msg = responseMsg['msg'];
+
+        if (!response.ok) {
+            alert(`Error: ${msg}!`);
+            return;
+        }
+
+        localStorage.setItem('isDashboard', 'true');
+
+        incomeForm.reset();
+
+        document.querySelector('#homepage').style.display = 'none';
+        document.querySelector('#dashboard').style.display = 'block';
+
+        try {
+            await fetch(
+                '/api/update-pool/new',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ msg })
+                }
+            );
+        } catch (error) {
+            console.error(`Error adding message to update pool: ${error}`);
+        }
+
+    } catch (error) {
+        alert('Something happened during the process. This is on our side, not yours. Please try again.');
+    }
+});
+
+
 // Update envelopes
 const updateForm = document.querySelector('#update-amount-form');
 
 updateForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const envelopeCategoryMsg = document.querySelector('#envelope-category-msg').textContent.trim();
-    const category = encodeURIComponent(envelopeCategoryMsg.toLowerCase());
+    const searchResultsTitle = document.querySelector('#search-results-title').textContent.trim();
+    const category = encodeURIComponent(searchResultsTitle.toLowerCase());
     
-    const amount = updateForm.querySelector('#amount').value;
+    const amount = updateForm.querySelector('#update-amount').value;
 
     try {
         const response = await fetch(
@@ -248,7 +433,6 @@ updateForm.addEventListener('submit', async (event) => {
         }
 
         updateForm.reset();
-        showEnvelopePage(envelopeCategoryMsg);
 
     } catch (error) {
         alert('Something happened while we were updating the envelope. This is on our side, not yours. Please try again.');
@@ -261,10 +445,10 @@ const subtractForm = document.querySelector('#subtract-amount-form');
 subtractForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const envelopeCategoryMsg = document.querySelector('#envelope-category-msg').textContent.trim();
-    const category = encodeURIComponent(envelopeCategoryMsg.toLowerCase());
+    const searchResultsTitle = document.querySelector('#search-results-title').textContent.trim();
+    const category = encodeURIComponent(searchResultsTitle.toLowerCase());
 
-    const amountToSubtract = document.querySelector('#subtract-amount-form #amount').value;
+    const subtractAmount = subtractForm.querySelector('#subtract-amount').value;
 
     try {
         const response = await fetch(
@@ -274,7 +458,7 @@ subtractForm.addEventListener('submit', async (event) => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ amount: amountToSubtract })
+                body: JSON.stringify({ subtractAmount })
             }
         );
 
@@ -301,7 +485,6 @@ subtractForm.addEventListener('submit', async (event) => {
         }
 
         subtractForm.reset();
-        showEnvelopePage(envelopeCategoryMsg);
 
     } catch (error) {
         alert('Something happened while we were updating the envelope. This is on our side, not yours. Please try again.');
@@ -314,9 +497,9 @@ const transferForm = document.querySelector('#transfer-funds-form');
 transferForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const categoryFrom = document.querySelector('#transfer-funds-form #categoryFrom').value.trim();
-    const categoryTo = document.querySelector('#transfer-funds-form #categoryTo').value.trim();
-    const amountToTransfer = document.querySelector('#transfer-funds-form #amount').value;
+    const categoryFrom = transferForm.querySelector('#category-from').value.trim();
+    const categoryTo = transferForm.querySelector('#category-to').value.trim();
+    const transferAmount = transferForm.querySelector('#transfer-amount').value;
 
     try {
         const response = await fetch(
@@ -326,7 +509,7 @@ transferForm.addEventListener('submit', async (event) => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ categoryFrom, categoryTo, amountToTransfer })
+                body: JSON.stringify({ categoryFrom, categoryTo, transferAmount })
             }
         );
 
@@ -367,8 +550,8 @@ const deleteEnvelopeButton = document.querySelector('#delete-envelope-button');
 deleteEnvelopeButton.addEventListener('click', async () => {
     const confirmDeletion = confirm('Last chance! Are you sure you want to delete this envelope? This action cannot be undone.');
 
-    const envelopeCategoryMsg = document.querySelector('#envelope-category-msg').textContent.trim();
-    const category = encodeURIComponent(envelopeCategoryMsg.toLowerCase());
+    const searchResultsTitle = document.querySelector('#search-results-title').textContent.trim();
+    const category = encodeURIComponent(searchResultsTitle.toLowerCase());
 
     if (confirmDeletion) {
         try {
@@ -399,7 +582,7 @@ deleteEnvelopeButton.addEventListener('click', async () => {
                 console.error(`Error adding message to update pool: ${error}`);
             }
 
-            window.location.href = '/';
+            window.location.reload();
 
         } catch (error) {
             alert('Something happened while we were deleting the envelope. This is on our side, not yours. Please try again.');
@@ -414,7 +597,7 @@ deleteEnvelopeButton.addEventListener('click', async () => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ msg: `Deletion for "${envelopeCategoryMsg}" envelope was cancelled` })
+                    body: JSON.stringify({ msg: `Deletion for "${searchResultsTitle}" envelope was cancelled` })
                 }
             );
         } catch (error) {
@@ -426,120 +609,21 @@ deleteEnvelopeButton.addEventListener('click', async () => {
 
 // Return to home
 const returnToHomeButton = document.querySelector('#return-to-home-button');
-returnToHomeButton.addEventListener('click', () => window.location.href = '/');
+
+returnToHomeButton.addEventListener('click', () => {
+    // Inefficient code. try to find a way to refersh the search results page without it redirecting to the dashboard
+    document.querySelector('#dashboard').style.display = 'block';
+    document.querySelector('#dashboard-search-category').value = '';
+    document.querySelector('#search-results-page').style.display = 'none';
+
+    window.location.reload();
+});
 
 
-// Update pool
-const displayUpdatePool = async () => {
-    try {
-        const response = await fetch('/api/update-pool/all');
-        const updatePool = await response.json();
+// Clear memory
+const clearLocalStorageButton = document.querySelector('#clear-local-storage-button');
 
-        if (!response.ok) {
-            alert(`Oops! ${updatePool['error']}!`);
-            return;
-        }
-
-        const updatePoolDiv = document.querySelector('#update-pool');
-        updatePoolDiv.innerHTML = '';
-
-        for (let i=updatePool.length - 1; i>=0; i--) {
-            const p = document.createElement('p');
-            p.textContent = updatePool[i];
-            updatePoolDiv.appendChild(p);
-        }
-
-    } catch (error) {
-        alert('Something happened while we were updating the pool. This is on our side, not yours. Please try again.');
-    }
-}
-
-
-// Helper functions
-const showPage = (pageToShow) => {
-    const pagesToHide = document.querySelectorAll('.page');
-
-    pagesToHide.forEach((page) => {
-        page.classList.remove('active');
-    });
-
-    pageToShow.classList.add('active');
-};
-
-const enterTableInfo = (envelope, thead, tbody) => {
-    thead.innerHTML = '';
-    tbody.innerHTML = '';
-
-    const headers = Object.keys(envelope);
-    
-    const headerRow = document.createElement('tr');
-    headers.forEach((header) => {
-        const th = document.createElement('th');
-        th.textContent = header;
-        headerRow.appendChild(th);
-    });
-
-    thead.appendChild(headerRow);
-
-    const row = document.createElement('tr');
-    headers.forEach((header) => {
-        const cell = document.createElement('td');
-
-        if (header === 'amount') {
-            cell.textContent = `$${envelope[header]}`;
-        } else {
-            cell.textContent = envelope[header];
-        }
-
-        row.appendChild(cell);
-    });
-
-    tbody.appendChild(row);
-};
-
-const fetchEnvelope = async (category, thead, tbody, envelopePage, envelopeCategoryMsg) => {
-    if (category.trim() === "") {
-        return;
-    }
-
-    try {
-        const response = await fetch(`/api/envelope/${encodeURIComponent(category.toLowerCase())}`);
-        const envelope = await response.json();
-
-        if (!response.ok) {
-            showPage(envelopePage);
-
-            envelopeCategoryMsg.textContent = `${envelope['msg']}! Your search '${category}' has no matches. Perhaps you made a typo?`;
-
-            thead.innerHTML = '';
-            tbody.innerHTML = '';
-
-            document.querySelector('#update-amount-container').style.display = 'none';
-            document.querySelector('#subtract-amount-container').style.display = 'none';
-            document.querySelector('#danger-zone').style.display = 'none';
-
-            return;
-        }
-
-        document.querySelector('#update-amount-container').style.display = 'block';
-        document.querySelector('#subtract-amount-container').style.display = 'block';
-        document.querySelector('#danger-zone').style.display = 'block';
-
-        return envelope;
-
-    } catch (error) {
-        alert('Something happened while we were fetching the envelope. This is on our side, not yours. Please try again.');
-    }
-};
-
-const showEnvelopePage = async (category) => {
-    const table = document.querySelector('#envelope-single-table');
-    const thead = table.querySelector('thead');
-    const tbody = table.querySelector('tbody');
-    const envelopePage = document.querySelector('#about-envelope-single');
-    const envelopeCategoryMsg = document.querySelector('#envelope-category-msg');
-
-    showPage(envelopePage);
-    const envelope = await fetchEnvelope(category, thead, tbody, envelopePage, envelopeCategoryMsg);
-    enterTableInfo(envelope, thead, tbody);
-};
+clearLocalStorageButton.addEventListener('click', () => {
+    localStorage.clear();
+    window.location.reload();
+});
