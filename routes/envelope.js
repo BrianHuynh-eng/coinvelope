@@ -57,7 +57,7 @@ envelopeRouter.post('/new', (req, res) => {
     }
 
     amount = Number(amount);
-    if (!category || !amount || amount <= 0) {
+    if (!category || !amount || amount < 0) {
         return res.status(400).json({ msg: `Category and amount are required; amount also must be a positive number (creation for "${category}" envelope did not pass)` });
     }
 
@@ -133,7 +133,7 @@ envelopeRouter.put('/:category/update', (req, res) => {
 
     const budgetingPowerSubtracted = updatedAmount - req.envelope['amount'];
 
-    if (budgetingPower - budgetingPowerSubtracted < 0) {
+    if ((budgetingPower - budgetingPowerSubtracted) < 0) {
         return res.status(400).json({ msg: `"${req.envelope['category']}" envelope cannot be updated because its budget amount exceeds the $${budgetingPower} Budgeting Power you have left; either keep the budget amount the same (if possible and recommended) OR transfer money from one envelope to this envelope (not recommended)` });
     }
 

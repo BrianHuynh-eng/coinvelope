@@ -6,13 +6,3 @@ html {
 #homepage {
     padding: 50px 150px;
 }
-
-/* Initially hidden; once the user enters their monthly income, it will be displayed */
-#dashboard {
-    display: none;
-}
-
-/* Initially hidden; once the user searches for an envelope via dashboard's search bar, it will be displayed */
-#search-results-page {
-    display: none;
-}
