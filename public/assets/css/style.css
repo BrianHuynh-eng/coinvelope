@@ -1,0 +1,239 @@
+html {
+    font-family: 'Albert Sans', serif;
+    font-weight: 350;
+    scroll-behavior: smooth;
+}
+
+form input:focus {
+    outline: none;
+}
+
+#homepage {
+    margin-top: 110px;
+    padding: 10px 50px;
+    color: #13274F;
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #13274F;
+    color: #FFFFFF;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 15vw;
+    padding: 1vw 3vw;
+}
+
+#homepage-logo-nav {
+    width: 12vw;
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar li {
+    margin: 0vw 2vw;
+}
+
+.navbar a {
+    color: #FFFFFF;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1vw;
+}
+
+.navbar a:hover {
+    text-decoration: #FFFFFF wavy underline;
+}
+
+#homepage-title-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1vw;
+}
+
+#homepage-logo-title {
+    width: 20vw;
+}
+
+#homepage-title {
+    font-size: 3.1vw;
+    font-weight: bold;
+}
+
+#note-about-envelope-budgeting-container {
+    margin: 0vw 10vw;
+    margin-top: 3.5vw;
+    line-height: 3vw;
+}
+
+.note-about-envelope-budgeting {
+    font-size: 1.5vw;
+}
+
+#down-arrow-homepage {
+    text-align: center;
+    font-size: 7vw;
+    margin: 0;
+    margin-top: 5vw;
+    padding: 0;
+}
+
+#homepage .container-title {
+    margin-top: 5vw;
+    font-size: 2.5vw;
+}
+
+.container-title {
+    text-align: center;
+}
+
+#income-input-form {
+    display: flex;
+    justify-content: center;
+    gap: 1.5vw;
+    color: #13274F;
+}
+
+#income-input-form input {
+    width: 30vw;
+    height: 2.5vw;
+    font-family: monospace;
+    font-size: 2vw;
+    padding: 0.5vw 1vw;
+    border: 3px solid #13274F;
+    border-radius: 25px;
+}
+
+form button {
+    border: 3px solid #13274F;
+    border-radius: 0px;
+    font-family: "Albert Sans", sans-serif;
+    background-color: #13274F;
+    color: #FFFFFF
+}
+
+form button:hover {
+    background-color: #FFFFFF;
+    color: #13274F;
+    border: 3px solid #13274F;
+    cursor: pointer;
+}
+
+#dashboard {
+    padding: 1.5vw 5vw;
+}
+
+.logo-search-container {
+    display: flex;
+    align-items: center;
+    gap: 15vw;
+    margin-bottom: 7vw;
+}
+
+#dashboard-logo {
+    width: 12vw;
+}
+
+.search-container form {
+    display: flex;
+    align-items: center;
+    gap: 1vw;
+}
+
+.search-container form input {
+    border: 2px solid #13274F;
+    border-radius: 25px;
+    font-family: monospace;
+    font-size: 1.2vw;
+    padding: 0.5vw 1vw;
+    width: 30vw;
+    height: 2vw;
+}
+
+.search-container form button {
+    border-radius: 50px;
+    height: 3.5vw;
+    padding: 0.5vw 1vw;
+}
+
+/* Save for later */
+/* .search-container form input:focus, .search-container form input:hover {
+
+} */
+
+#dashboard-features {
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: center;
+    gap: 5vw;
+} 
+
+.container {
+    border: 2px solid #13274F;
+    border-radius: 25px;
+    background-color: #F5F5F5;
+    display: inline-block;
+    padding: 0.5vw 1vw;
+    width: 20vw;
+    height: 30vw;
+    overflow: scroll;
+}
+
+#pattern-container {
+    margin-top: 10vw;
+}
+
+.pattern:nth-of-type(even) {
+    height: 1vw;
+    width: 100%;
+    background-color: #FFFFFF;
+}
+
+.pattern:nth-of-type(odd) {
+    height: 1vw;
+    width: 100%;
+    background-color: #13274F;
+}
+
+#footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5vw;
+    margin-bottom: 5vw;
+    gap: 5vw;
+}
+
+#footer-logo {
+    width: 30vw;
+}
+
+#footer div p {
+    font-weight: bold;
+    margin: 0.2vw;
+    color: #13274F;
+}
+
+#footer div a {
+    text-decoration: #13274F wavy underline;
+    color: #13274F;
+}
+
+#footer div a:hover {
+    background-color: #13274F;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+
+

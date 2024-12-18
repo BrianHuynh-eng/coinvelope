@@ -1,8 +1,0 @@
-html {
-    font-family: 'Noto Serif', serif;
-}
-
-/* Intially shown; once the user enters their monthly income, it will disappear */
-#homepage {
-    padding: 50px 150px;
-}

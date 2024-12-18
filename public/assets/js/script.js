@@ -41,6 +41,7 @@ const handlePaths = async () => {
         document.querySelector('#homepage').style.display = 'none';
         document.querySelector('#dashboard').style.display = 'block';
         document.querySelector('#search-results-page').style.display = 'none';
+        document.querySelector('#pattern-container').style.display = 'none';
        
     } else if (path.startsWith('/envelope-')) {
         if (sessionStorage.getItem('hasIncomeInputted') !== 'true') {
