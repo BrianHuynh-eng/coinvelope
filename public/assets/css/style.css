@@ -2,6 +2,7 @@ html {
     font-family: 'Albert Sans', serif;
     font-weight: 350;
     scroll-behavior: smooth;
+    color: #13274F;
 }
 
 form input:focus {
@@ -11,7 +12,6 @@ form input:focus {
 #homepage {
     margin-top: 110px;
     padding: 10px 50px;
-    color: #13274F;
 }
 
 .navbar {
@@ -80,7 +80,16 @@ form input:focus {
     font-size: 1.5vw;
 }
 
-#down-arrow-homepage {
+#about-envelope-budgeting,
+#why-coinvelope {
+    scroll-margin-top: 5.7vw;
+}
+
+#get-started {
+    scroll-margin-top: 22.5vw;
+}
+
+#down-arrow {
     text-align: center;
     font-size: 7vw;
     margin: 0;
@@ -94,29 +103,45 @@ form input:focus {
 }
 
 .container-title {
+    margin: 0;
+    margin-top: 1.5vw;
     text-align: center;
+    font-size: 1.8vw;
 }
 
 #income-input-form {
+    margin-top: 3vw;
     display: flex;
     justify-content: center;
     gap: 1.5vw;
+}
+
+form input {
+    font-family: monospace;
     color: #13274F;
+    border: 3px solid #13274F;
+    border-radius: 25px;
+}
+
+form input:focus,
+form input:hover {
+    box-shadow: 0px 1px 10px #13274F;
 }
 
 #income-input-form input {
     width: 30vw;
     height: 2.5vw;
-    font-family: monospace;
     font-size: 2vw;
     padding: 0.5vw 1vw;
-    border: 3px solid #13274F;
-    border-radius: 25px;
+}
+
+#income-input-form button {
+    padding: 0.5vw 1vw;
 }
 
 form button {
     border: 3px solid #13274F;
-    border-radius: 0px;
+    border-radius: 30px;
     font-family: "Albert Sans", sans-serif;
     background-color: #13274F;
     color: #FFFFFF
@@ -140,7 +165,7 @@ form button:hover {
     margin-bottom: 7vw;
 }
 
-#dashboard-logo {
+.dashboard-search-logo {
     width: 12vw;
 }
 
@@ -166,16 +191,11 @@ form button:hover {
     padding: 0.5vw 1vw;
 }
 
-/* Save for later */
-/* .search-container form input:focus, .search-container form input:hover {
-
-} */
-
-#dashboard-features {
+.container-wrapper {
     flex-wrap: wrap;
     display: flex;
     justify-content: center;
-    gap: 5vw;
+    gap: 2vw;
 } 
 
 .container {
@@ -184,9 +204,212 @@ form button:hover {
     background-color: #F5F5F5;
     display: inline-block;
     padding: 0.5vw 1vw;
-    width: 20vw;
-    height: 30vw;
+    width: 25vw;
+    height: 35vw;
     overflow: scroll;
+}
+
+#envelopes-table-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 1.75vw;
+}
+
+#envelopes-table {
+    text-align: center;
+}
+
+#envelopes-table thead {
+    font-size: 1.8vw;
+    margin: 0;
+    text-decoration: #13274F wavy underline;
+}
+
+#envelopes-table tbody {
+    font-size: 1.5vw;
+}
+
+#envelopes-table th,
+#envelopes-table td {
+    padding: 0.5vw 2vw;
+    font-weight: bold;
+}
+
+.ellipsis {
+    text-align: center;
+    font-size: 3vw;
+    margin: 0;
+    margin-top: 0.5vw;
+}
+
+.container .form-container {
+    margin-top: 2.5vw;
+    padding: 0vw 0.5vw;
+}
+
+.container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.container form label {
+    font-size: 1.5vw;
+}
+
+.container form input {
+    margin-top: 1vw;
+    margin-bottom: 2vw;
+    padding: 0.3vw 1vw;
+    width: 22vw;
+    height: 2vw;
+    font-size: 1.1vw;
+}
+
+.container form button {
+    margin-bottom: 2vw;
+    width: 50%;
+    height: 3.5vw;
+}
+
+.budgeting-information-title {
+    margin: 0;
+    margin-top: 3.55vw;
+    font-size: 2vw;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: #13274F wavy underline;
+}
+
+.budgeting-information {
+    margin: 0;
+    margin-top: 1vw;
+    text-align: center;
+    font-size: 6.5vw;
+    font-weight: bold;
+}
+
+#updates-history-disclaimer {
+    margin: 0;
+    font-size: 0.75vw;
+    text-align: center;
+}
+
+#updates-history {
+    margin-top: 2vw;
+    padding: 0vw 1vw;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25vw;
+}
+
+#updates-history p {
+    font-size: 1vw;
+    text-align: center;
+    padding-bottom: 2.25vw;
+    border-bottom: 1px solid #13274F;
+}
+
+#updates-history p:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.danger-zone {
+    border: 2px solid #DC143C;
+}
+
+.danger-zone-title {
+    color: #DC143C;
+}
+
+.danger-zone-container {
+    padding: 0vw 1vw;
+    margin-top: 2.5vw;
+}
+
+.danger-zone-container p {
+    margin-top: 2.75vw;
+}
+
+.danger-zone-container form {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75vw;
+}
+
+.danger-zone-container form input {
+    width: 12.5vw;
+    height: 1.75vw;
+    margin: 0;
+}
+
+.danger-zone-container form button {
+    padding: 0vw 0.5vw;
+    width: 7.5vw;
+    height: 2.75vw;
+    margin: 0;
+}
+
+.danger-zone-container button  {
+    margin: 0;
+    margin-bottom: 0.75vw;
+    padding: 0.5vw 1vw;
+    border: 3px solid #13274F;
+    border-radius: 0px;
+    font-family: "Albert Sans", sans-serif;
+    background-color: #13274F;
+    color: #FFFFFF;
+    height: 2.5vw;
+    border-radius: 30px;
+}
+
+.danger-zone-container button:hover {
+    background-color: #FFFFFF;
+    color: #13274F;
+    border: 3px solid #13274F;
+    cursor: pointer;
+}
+
+#search-results-page {
+    padding: 1.5vw 5vw;
+}
+
+#return-to-home-btn {
+    border-radius: 10px;
+    width: 10vw;
+    height: 3.75vw;
+    background-color: #13274F;
+    color: #FFFFFF;
+    border: 3px solid #13274F;
+}
+
+#return-to-home-btn:hover {
+    background-color: #FFFFFF;
+    color: #13274F;
+    cursor: pointer;
+}
+
+#search-results-page .container {
+    height: 21vw;
+    overflow: hidden;
+}
+
+.envelope-information {
+    text-align: center;
+    font-size: 8vw;
+    font-weight: bold;
+    margin: 0;
+    margin-top: 3vw;
+}
+
+#product-note {
+    margin: 0;
+    margin-top: 1.25vw;
+    padding: 0vw 1vw;
+    font-size: 1.5vw;
+    font-weight: 300;
 }
 
 #pattern-container {
@@ -210,15 +433,16 @@ form button:hover {
     justify-content: center;
     align-items: center;
     margin-top: 5vw;
-    margin-bottom: 5vw;
+    margin-bottom: 2vw;
     gap: 5vw;
 }
 
 #footer-logo {
-    width: 30vw;
+    width: 20vw;
 }
 
 #footer div p {
+    font-size: 1vw;
     font-weight: bold;
     margin: 0.2vw;
     color: #13274F;

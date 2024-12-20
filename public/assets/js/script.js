@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     displayAllEnvelopes();
     displayBudgetingPower();
     displayTotalBalance();
-    displayUpdatePool();
+    displayUpdatesHistory();
     displayRandomEnvelopeSuggestion();
 });
 
@@ -17,8 +17,9 @@ const handlePaths = async () => {
             document.querySelector('#homepage').style.display = 'none';
             document.querySelector('#dashboard').style.display = 'block';
             document.querySelector('#search-results-page').style.display = 'none';
+            document.querySelector('#pattern-container').style.display = 'none';
 
-            window.history.replaceState({ page: 'dashboard' }, '', '/dashboard');
+            window.history.replaceState('', '', '/dashboard');
 
             return;
         }
@@ -26,6 +27,9 @@ const handlePaths = async () => {
         document.querySelector('#homepage').style.display = 'block';
         document.querySelector('#dashboard').style.display = 'none';
         document.querySelector('#search-results-page').style.display = 'none';
+        document.querySelector('#pattern-container').style.display = 'block';
+
+        globalThis.scrollTo(0, 0);
 
     } else if (path === '/dashboard') {
         if (sessionStorage.getItem('hasIncomeInputted') !== 'true') {
@@ -33,7 +37,7 @@ const handlePaths = async () => {
             document.querySelector('#dashboard').style.display = 'none';
             document.querySelector('#search-results-page').style.display = 'none';
 
-            window.history.replaceState({ page: 'homepage' }, '', '/');
+            window.history.replaceState('', '', '/');
 
             return;
         }
@@ -42,6 +46,8 @@ const handlePaths = async () => {
         document.querySelector('#dashboard').style.display = 'block';
         document.querySelector('#search-results-page').style.display = 'none';
         document.querySelector('#pattern-container').style.display = 'none';
+
+        globalThis.scrollTo(0, 0);
        
     } else if (path.startsWith('/envelope-')) {
         if (sessionStorage.getItem('hasIncomeInputted') !== 'true') {
@@ -49,7 +55,7 @@ const handlePaths = async () => {
             document.querySelector('#dashboard').style.display = 'none';
             document.querySelector('#search-results-page').style.display = 'none';
             
-            window.history.replaceState({ page: 'homepage' }, '', '/');
+            window.history.replaceState('', '', '/');
 
             return;
         }
@@ -57,6 +63,7 @@ const handlePaths = async () => {
         document.querySelector('#homepage').style.display = 'none';
         document.querySelector('#dashboard').style.display = 'none';
         document.querySelector('#search-results-page').style.display = 'block';
+        document.querySelector('#pattern-container').style.display = 'none';
 
         const searchedCategory = decodeURIComponent(path.split('/envelope-')[1]).trim();
         const category = encodeURIComponent(searchedCategory.toLowerCase());
@@ -72,15 +79,13 @@ const handlePaths = async () => {
 
             if (!response.ok) {
                 searchResultsTitle.textContent = `${responseEnvelope['msg']}! Your search '${searchedCategory}' has no matches. Perhaps you made a typo?`;
-                searchResultsTitle.style.fontSize = '70px';
-                searchResultsTitle.style.margin = '0px';
-                searchResultsTitle.style.padding = '0px';
+                searchResultsTitle.style.fontSize = '7vw';
+                searchResultsTitle.style.textAlign = 'center';
 
-                document.querySelector('#envelope-information-container').style.display = 'none';
                 document.querySelectorAll('#search-results-page .container').forEach((container) => {
                     container.style.display = 'none';
                 });
-                document.querySelector('#danger-zone').style.display = 'none';
+                document.querySelector('.danger-zone').style.display = 'none';
 
                 return;
             }
@@ -88,33 +93,36 @@ const handlePaths = async () => {
             const envelope = responseEnvelope['envelope'];
 
             searchResultsTitle.textContent = envelope['category'];
-            searchResultsTitle.style.fontSize = '50px';
-            searchResultsTitle.style.margin = '30px 0px';
+            searchResultsTitle.style.fontSize = '5vw';
+            searchResultsTitle.style.textAlign = 'center';
+            searchResultsTitle.style.marginTop = '-2vw';
 
-            document.querySelector('#envelope-information-container').style.display = 'block';
             document.querySelector('#current-balance').textContent = `$${envelope['amount']}`;
             document.querySelectorAll('#search-results-page .container').forEach((container) => {
                 container.style.display = 'block';
             });
-            document.querySelector('#danger-zone').style.display = 'block';
+            document.querySelector('.danger-zone').style.display = 'block';
+
+            globalThis.scrollTo(0, 0);
 
         } catch (error) {
             alert('Something happened while we were searching for the envelope. This is on our side, not yours. Please try again.');
-            window.history.replaceState({ page: 'dashboard' }, '', '/dashboard');
+            window.history.replaceState('', '', '/dashboard');
         }
 
     } else {
         document.querySelector('#homepage').style.display = 'none';
         document.querySelector('#dashboard').style.display = 'none';
         document.querySelector('#search-results-page').style.display = 'none';
+        document.querySelector('#pattern-container').style.display = 'none';
 
         const html = document.querySelector('html');
 
         const h1 = document.createElement('h1');
         h1.textContent = '?';
-        h1.style.fontSize = '500px';
-        h1.style.margin = '0px';
-        h1.style.padding = '0px';
+        h1.style.fontSize = '35vw';
+        h1.style.margin = '0';
+        h1.style.padding = '0';
         h1.style.textAlign = 'center';
 
         html.prepend(h1);
@@ -147,13 +155,22 @@ const displayAllEnvelopes = async () => {
         const responseEnvelopes = await response.json();
 
         if (!response.ok) {
-            document.querySelector('#no-envelope-msg').textContent = `${responseEnvelopes['msg']}! Create an envelope and start budgeting!`;
+            const tableContainer = document.querySelector('#envelopes-table-container');
+
+            const p = document.createElement('p');
+            p.textContent = `${responseEnvelopes['msg']}! Create an envelope and start budgeting!`;
+            p.style.textAlign = 'center';
+            p.style.margin = '0';
+            p.style.marginTop = '2.25vw';
+            p.style.fontSize = '3.25vw';
+            p.style.fontWeight = 'bold';
+            p.style.padding = '0vw 1.5vw';
+
+            tableContainer.appendChild(p);
             return;
         }
 
         const envelopes = responseEnvelopes['envelopes'];
-
-        document.querySelector('#no-envelope-msg').display = 'none';
 
         const table = document.querySelector('#envelopes-table');
         const thead = table.querySelector('thead');
@@ -229,22 +246,38 @@ const displayTotalBalance = async () => {
 
 
 // Read updates
-const displayUpdatePool = async () => {
+const displayUpdatesHistory = async () => {
     try {
-        const response = await fetch('/api/update-pool/all');
-        const updatePool = await response.json();
+        const response = await fetch('/api/updates/all');
+        const responseUpdatesHistory = await response.json();
 
-        const updatePoolDiv = document.querySelector('#update-pool');
-        updatePoolDiv.innerHTML = '';
+        const updatesHistoryDiv = document.querySelector('#updates-history');
+        updatesHistoryDiv.innerHTML = '';
 
-        for (let i=updatePool.length - 1; i>=0; i--) {
+        if (!response.ok) {
             const p = document.createElement('p');
-            p.textContent = updatePool[i];
-            updatePoolDiv.appendChild(p);
+            p.textContent = responseUpdatesHistory['msg'];
+            p.style.margin = '0';
+            p.style.marginTop = '2.25vw';
+            p.style.fontSize = '5vw';
+            p.style.textAlign = 'center';
+            p.style.fontWeight = 'bold';
+
+            updatesHistoryDiv.appendChild(p);
+
+            return;
+        }
+
+        const updatesHistory = responseUpdatesHistory['updatesHistory'];
+
+        for (let i=updatesHistory.length - 1; i>=0; i--) {
+            const p = document.createElement('p');
+            p.textContent = updatesHistory[i];
+            updatesHistoryDiv.appendChild(p);
         }
 
     } catch (error) {
-        alert('Something happened while we were updating the pool. This is on our side, not yours. Please try again.');
+        alert('Something happened while we were loading the updates history. This is on our side, not yours. Please try again.');
     }
 };
 
@@ -308,25 +341,10 @@ creationForm.addEventListener('submit', async (event) => {
         const msg = responseMsg['msg'];
 
         if (!response.ok) {
-            alert(`Error: ${msg}!`);
+            alert(`${msg}!`);
         }
 
-        document.querySelector('#no-envelope-msg').style.display = 'none';
-
-        try {
-            await fetch(
-                '/api/update-pool/new', 
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ msg })
-                }
-            );
-        } catch (error) {
-            console.error(`Error adding message to update pool: ${error}`);
-        }
+        addToUpdatesHistory(msg);
 
         creationForm.reset();
         window.location.reload();
@@ -361,30 +379,21 @@ incomeForm.addEventListener('submit', async (event) => {
         const msg = responseMsg['msg'];
 
         if (!response.ok) {
-            alert(`Error: ${msg}!`);
+            alert(`${msg}!`);
             return;
         }
+
+        addToUpdatesHistory(msg);
 
         incomeForm.reset();
 
         sessionStorage.setItem('hasIncomeInputted', 'true');
-        window.history.replaceState({ page: 'dashboard' }, '', '/dashboard');
-        window.location.reload();
+        window.history.replaceState('', '', '/dashboard');
+        globalThis.scrollTo(0, 0);
 
-        try {
-            await fetch(
-                '/api/update-pool/new',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ msg })
-                }
-            );
-        } catch (error) {
-            console.error(`Error adding message to update pool: ${error}`);
-        }
+        setTimeout(() => {
+            window.location.reload();
+        }, 750);
 
     } catch (error) {
         alert('Something happened during the process. This is on our side, not yours. Please try again.');
@@ -418,29 +427,131 @@ transferForm.addEventListener('submit', async (event) => {
         const msg = responseMsg['msg'];
 
         if (!response.ok) {
-            alert(`Error: ${msg}!`);
+            alert(`${msg}!`);
         }
 
-        try {
-            await fetch(
-                '/api/update-pool/new',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ msg })
-                }
-            );
-        } catch (error) {
-            console.error(`Error adding message to update pool: ${error}`);
-        }
+        addToUpdatesHistory(msg);
 
         transferForm.reset();
         window.location.reload();
 
     } catch (error) {
         alert('Something happened while we were updating the envelope. This is on our side, not yours. Please try again.');
+    }
+});
+
+
+// Update monthly income
+const updateIncomeForm = document.querySelector('#update-income-form');
+
+updateIncomeForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const monthlyIncome = updateIncomeForm.querySelector('#update-income').value;
+
+    try {
+        const response = await fetch(
+            'api/envelope/update-income',
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ monthlyIncome })
+            }
+        );
+
+        const responseMsg = await response.json();
+        const msg = responseMsg['msg'];
+
+        if (!response.ok) {
+            alert(`${msg}!`);
+        }
+
+        addToUpdatesHistory(msg);
+
+        updateIncomeForm.reset();
+        window.location.reload();
+
+    } catch (error) {
+        alert('Something happened while we were updating the envelope. This is on our side, not yours. Please try again.');
+    }
+});
+
+
+// Delete all envelopes
+const deleteAllEnvelopesBtn = document.querySelector('#delete-all-envelopes-btn');
+
+deleteAllEnvelopesBtn.addEventListener('click', async () => {
+    const confirmDeletion = confirm('Are you sure you want to delete all envelopes? You will not be able to recover them.');
+
+    if (confirmDeletion) {
+        try {
+            const response = await fetch(
+                '/api/envelope/delete-all-envelopes',
+                {method: 'DELETE'}
+            )
+
+            const responseMsg = await response.json();
+            const msg = responseMsg['msg'];
+
+            if (!response.ok) {
+                alert(`${msg}!`);
+            }
+
+            addToUpdatesHistory(msg);
+            
+            window.location.reload();
+
+        } catch (error) {
+            alert('Something happened while we were deleting the envelopes. This is on our side, not yours. Please try again.');
+        }
+
+    } else {
+        addToUpdatesHistory('Deletion for all envelopes was cancelled');
+    }
+});
+
+
+// Delete everything
+const deleteEverythingBtn = document.querySelector('#delete-everything-btn');
+
+deleteEverythingBtn.addEventListener('click', async () => {
+    const confirmDeletion = confirm('Are you sure you want to delete everything? All data will be lost.');
+
+    if (confirmDeletion) {
+        const reconfirmDeletion = confirm('Last chance! Are you sure you want to delete everything? This action cannot be undone.');
+
+        if (reconfirmDeletion) {
+            try {
+                await fetch(
+                    '/api/envelope/delete-everything',
+                    {method: 'DELETE'}
+                );
+
+            } catch (error) {
+                alert('Something happened while we were deleting everything. This is on our side, not yours. Please try again.');
+            }
+
+            try {
+                await fetch(
+                    '/api/updates/delete-all',
+                    {method: 'DELETE'}
+                );
+                
+            } catch (error) {
+                console.error(`Error adding message to update pool: ${error}`);
+            }
+
+            sessionStorage.clear();
+            window.history.replaceState('', '', '/');
+
+        } else {
+            addToUpdatesHistory('Deletion for all data was cancelled');
+        }
+
+    } else {
+        addToUpdatesHistory('Deletion for all data was cancelled');
     }
 });
 
@@ -464,7 +575,7 @@ const searchResultsSearchForm = document.querySelector('#search-results-search-f
             const response = await fetch(`/api/envelope/${category}`);
             const responseEnvelope = await response.json();
 
-            window.history.pushState({ page: 'search', category: searchedCategory }, '', `/envelope-${category}`);
+            window.history.pushState('', '', `/envelope-${category}`);
 
             document.querySelector('#dashboard-search-category').value = searchedCategory;
             document.querySelector('#search-results-search-category').value = searchedCategory;
@@ -473,15 +584,13 @@ const searchResultsSearchForm = document.querySelector('#search-results-search-f
 
             if (!response.ok) {
                 searchResultsTitle.textContent = `${responseEnvelope['msg']}! Your search '${searchedCategory}' has no matches. Perhaps you made a typo?`;
-                searchResultsTitle.style.fontSize = '70px';
-                searchResultsTitle.style.margin = '0px';
-                searchResultsTitle.style.padding = '0px';
+                searchResultsTitle.style.fontSize = '7vw';
+                searchResultsTitle.style.textAlign = 'center';
 
-                document.querySelector('#envelope-information-container').style.display = 'none';
                 document.querySelectorAll('#search-results-page .container').forEach((container) => {
                     container.style.display = 'none';
                 });
-                document.querySelector('#danger-zone').style.display = 'none';
+                document.querySelector('.danger-zone').style.display = 'none';
 
                 return;
             }
@@ -489,15 +598,15 @@ const searchResultsSearchForm = document.querySelector('#search-results-search-f
             const envelope = responseEnvelope['envelope'];
 
             searchResultsTitle.textContent = envelope['category'];
-            searchResultsTitle.style.fontSize = '50px';
-            searchResultsTitle.style.margin = '30px 0px';
+            searchResultsTitle.style.fontSize = '5vw';
+            searchResultsTitle.style.textAlign = 'center';
+            searchResultsTitle.style.marginTop = '-2vw';
 
-            document.querySelector('#envelope-information-container').style.display = 'block';
             document.querySelector('#current-balance').textContent = `$${envelope['amount']}`;
             document.querySelectorAll('#search-results-page .container').forEach((container) => {
                 container.style.display = 'block';
             });
-            document.querySelector('#danger-zone').style.display = 'block';
+            document.querySelector('.danger-zone').style.display = 'block';
 
         } catch (error) {
             alert('Something happened while we were searching for the envelope. This is on our side, not yours. Please try again.');
@@ -533,23 +642,10 @@ updateForm.addEventListener('submit', async (event) => {
         const msg = responseMsg['msg'];
 
         if (!response.ok) {
-            alert(`Error: ${msg}!`);
+            alert(`${msg}!`);
         }
 
-        try {
-            await fetch(
-                '/api/update-pool/new',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ msg })
-                }
-            );
-        } catch (error) {
-            console.error(`Error adding message to update pool: ${error}`);
-        }
+        addToUpdatesHistory(msg);
 
         updateForm.reset();
         window.location.reload();
@@ -587,23 +683,10 @@ subtractForm.addEventListener('submit', async (event) => {
         const msg = responseMsg['msg'];
 
         if (!response.ok) {
-            alert(`Error: ${msg}!`);
+            alert(`${msg}!`);
         }
 
-        try {
-            await fetch(
-                '/api/update-pool/new',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ msg })
-                }
-            );
-        } catch (error) {
-            console.error(`Error adding message to update pool: ${error}`);
-        }
+        addToUpdatesHistory(msg);
 
         subtractForm.reset();
         window.location.reload();
@@ -615,9 +698,9 @@ subtractForm.addEventListener('submit', async (event) => {
 
 
 // Delete single envelope
-const deleteEnvelopeButton = document.querySelector('#delete-envelope-button');
+const deleteEnvelopeBtn = document.querySelector('#delete-envelope-btn');
 
-deleteEnvelopeButton.addEventListener('click', async () => {
+deleteEnvelopeBtn.addEventListener('click', async () => {
     const confirmDeletion = confirm('Last chance! Are you sure you want to delete this envelope? This action cannot be undone.');
 
     const searchResultsTitle = document.querySelector('#search-results-title').textContent.trim();
@@ -633,63 +716,47 @@ deleteEnvelopeButton.addEventListener('click', async () => {
             const responseMsg = await response.json();
             const msg = responseMsg['msg'];
 
-            if (!response.ok) {
-                alert(`Error: ${msg}!`);
-            }
+            addToUpdatesHistory(msg);
 
-            try {
-                await fetch(
-                    '/api/update-pool/new',
-                    {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ msg })
-                    }
-                );
-            } catch (error) {
-                console.error(`Error adding message to update pool: ${error}`);
-            }
-
-            returnToHomeButton.click();
+            returnToHomeBtn.click();
 
         } catch (error) {
             alert('Something happened while we were deleting the envelope. This is on our side, not yours. Please try again.');
         }
 
     } else {
-        try {
-            await fetch(
-                '/api/update-pool/new',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ msg: `Deletion for "${searchResultsTitle}" envelope was cancelled` })
-                }
-            );
-        } catch (error) {
-            console.error(`Error adding message to update pool: ${error}`);
-        }
+        addToUpdatesHistory(`Deletion for "${searchResultsTitle}" envelope was cancelled`);
     }
 });
 
 
 // Return to home
-const returnToHomeButton = document.querySelector('#return-to-home-button');
+const returnToHomeBtn = document.querySelector('#return-to-home-btn');
 
-returnToHomeButton.addEventListener('click', () => {
-    window.history.pushState({ page: 'dashboard' }, '', '/dashboard');
-    window.location.reload();
+returnToHomeBtn.addEventListener('click', () => {
+    window.history.replaceState('', '', '/dashboard');
+    globalThis.scrollTo(0, 0);
+
+    setTimeout(() => {
+        window.location.reload();
+    }, 750);
 });
 
 
-// Clear session storage
-const clearSessionStorageButton = document.querySelector('#clear-session-storage-button');
-
-clearSessionStorageButton.addEventListener('click', () => {
-    sessionStorage.clear();
-    window.history.replaceState({ page: 'homepage' }, '', '/');
-});
+// Helper function(s)
+const addToUpdatesHistory = async (msg) => {
+    try {
+        await fetch(
+            '/api/updates/new',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ msg })
+            }
+        );
+    } catch (error) {
+        console.error(`Error adding message to update pool: ${error}`);
+    }
+};

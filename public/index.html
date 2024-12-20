@@ -22,9 +22,9 @@
             </div>
 
             <ul>
-                <li><a href="#what-is-envelope-budgeting">What is Envelope Budgeting</a></li>
+                <li><a href="#about-envelope-budgeting">What is Envelope Budgeting</a></li>
                 <li><a href="#why-coinvelope">Why Coinvelope</a></li>
-                <li><a href="#down-arrow-homepage">Get Started</a></li>
+                <li><a href="#get-started">Get Started</a></li>
             </ul>
         </nav>
 
@@ -38,20 +38,20 @@
             
             <p class="note-about-envelope-budgeting">Create a new envelope by entering the category of spending and the allocated budget for spending in that category. For example, you can create an envelope labeled 'Groceries' with a $200 monthly budget.</p>
 
-            <p id="what-is-envelope-budgeting" class="note-about-envelope-budgeting">Before you do that, though, let us tell you more about envelope budgeting.</p>
+            <p id="about-envelope-budgeting" class="note-about-envelope-budgeting">Before you do that, though, let us tell you more about envelope budgeting.</p>
             
             <p class="note-about-envelope-budgeting">Envelope budgeting is a powerful way of managing your spending by dividing your monthly income into separate pieces. Each piece is stored inside of an envelope, and each piece is given a category of spending. Traditional budgeting chops up your income into percentages and allocates those percentages on a category of spending. This, however, is very abstract. Because the traditional method uses percentages, people will feel less guilty of spending over that category budget. Envelope budgeting solves this problem. Once the money in an envelope is gone and "spent up", you cannot spend anything on that category again. Now, it doesn't actually <i>force</i> you to stop spending on that category. Rather, it <i>psychologically</i> forces you to stop spending because you are more likely to look at a stash of cash draining out, than a bunch of percentages thrown at you. Envelope budgeting forces you to enter the EXACT dollar amount of that category, making you feel guilty for every dollar you spend (as it should be!)</p>
             
-            <p id="why-coinvelope" class="note-about-envelope-budgeting">For example, some categories are: 'Rent,' 'Utilities,' 'Entertainment,' and 'Savings'. And maybe, you can set the budget for each category as: 'Groceries' ($200), 'Rent' ($1,500), 'Utilities' ($150), 'Entertainment' ($300), 'Transportation' ($500), 'Savings' ($500), and 'Health & Wellness' ($100). It's that easy!</p>
+            <p class="note-about-envelope-budgeting">For example, some categories are: 'Rent,' 'Utilities,' 'Entertainment,' and 'Savings'. And maybe, you can set the budget for each category as: 'Groceries' ($200), 'Rent' ($1,500), 'Utilities' ($150), 'Entertainment' ($300), 'Transportation' ($500), 'Savings' ($500), and 'Health & Wellness' ($100). It's that easy!</p>
             
-            <p class="note-about-envelope-budgeting">The normal way of budgeting with envelopes is to use physical envelopes, stuff cash in, and take them out and use that cash to pay for whatever you spend it on. This is great. However, we cannot stuff ten thousand dollars in one envelope. Coinvelope is the digital version of envelope budgeting. Now, let's forget about the old school stuff. Let's make budgeting less abstract and more applied!</p> 
+            <p id="why-coinvelope" class="note-about-envelope-budgeting">The normal way of budgeting with envelopes is to use physical envelopes, stuff cash in, and take them out and use that cash to pay for whatever you spend it on. This is great. However, we cannot stuff ten thousand dollars in one envelope. Coinvelope is the digital version of envelope budgeting. Now, let's forget about the old school stuff. Let's make budgeting less abstract and more applied!</p> 
             
             <p class="note-about-envelope-budgeting">Below, enter your expected income for this month to start budgeting!</p>
         </div>
 
-        <p id="down-arrow-homepage">↓</p>
+        <p id="down-arrow">↓</p>
 
-        <h3 class="container-title">What is/will be your income for this month?</h3>
+        <h3 id="get-started" class="container-title">What is/will be your income for this month?</h3>
 
         <div class="form-container">
             <form id="income-input-form" class="form">
@@ -63,7 +63,7 @@
 
     <div id="dashboard">
         <div class="logo-search-container">
-            <img src="./assets/images/coinvelope-logo-original-trans.png" alt="Coinvelope logo" id="dashboard-logo" />
+            <img src="./assets/images/coinvelope-logo-original-trans.png" alt="Coinvelope logo" class="dashboard-search-logo" />
 
             <div class="search-container">
                 <form id="dashboard-search-form">
@@ -73,17 +73,18 @@
             </div>
         </div>
 
-        <div id="dashboard-features">
+        <div class="container-wrapper">
             <div class="container">
-                <h2 id="envelopes-table-title">Your Envelopes</h2>
-                <p id="no-envelope-msg"></p>
+                <h3 class="container-title">Your Envelopes</h3>
 
-                <div id="envelopes-table-container-inner">
+                <div id="envelopes-table-container">
                     <table id="envelopes-table">
                         <thead></thead>
                         <tbody></tbody>
                     </table>
                 </div>
+
+                <p class="ellipsis">...</p>
             </div>
 
             <div class="container">
@@ -94,7 +95,7 @@
                         <label for="creation-category">What will be your new envelope's category?</label>
                         <input type="text" id="creation-category" name="category" placeholder="Housing, shopping, health, etc." required />
 
-                        <label for="creation-amount">How much will you spend per month in this category?<br><span class="bold">Think wisely!</span></label>
+                        <label for="creation-amount">How much will you spend per month in this category?</label>
                         <input type="number" id="creation-amount" name="amount" placeholder="1500, 50, 700, etc." required />
 
                         <button type="submit">Create Envelope</button>
@@ -103,7 +104,7 @@
             </div>
 
             <div class="container">
-                <h3 class="container-title">Transfer Funds Between Envelopes</h3>
+                <h3 class="container-title">Transfer Funds</h3>
 
                 <div class="form-container">
                     <form id="transfer-funds-form" class="form">
@@ -121,79 +122,105 @@
                 </div>
             </div>
 
-            <div class="container">
+            <div class="container"> 
                 <h3 class="container-title">Additional Info.</h3>
-
-                <p class="budgeting-information-title">Budgeting Power</p>
-                <p id="budgeting-power" class="budgeting-information"></p>
 
                 <p class="budgeting-information-title">Total Remaining Balance</p>
                 <p id="total-balance" class="budgeting-information"></p>
+
+                <p class="budgeting-information-title">Budgeting Power</p>
+                <p id="budgeting-power" class="budgeting-information"></p>
             </div>
 
             <div class="container">
-                <h3 class="container-title">Logging - Results - Updates Pool</h3> 
-                <div id="update-pool"></div>
+                <h3 class="container-title">Updates History</h3> 
+                <p id="updates-history-disclaimer">(Latest 30 Changes)</p>
+                <div id="updates-history"></div>
+                <p class="ellipsis">...</p>
             </div>
 
-            <div class="container">
-                <h3 class="container-title">Clear Session Storage</h3>
-                <p id="clear-session-storage-msg">If there are any bugs, such as being directed to this dashboard before being asked to enter your monthly income, or the software refusing to accept your envelope creations, there may be a problem related to the software's session storage. Click on the button below to clear the session storage. All bugs should be resolved after that.</p>
-                <button id="clear-session-storage-button">Clear Session Storage</button>
+            <div class="container danger-zone">
+                <h3 class="container-title danger-zone-title">Danger Zone</h3>
+
+                <div class="danger-zone-container">
+                    <p>If you have received a raise or promotion, change your monthly income here:</p>
+                    <form id="update-income-form" class="form">
+                        <input type="number" id="update-income" name="update-income" required />
+                        <button type="submit">Update Income</button>
+                    </form>
+
+                    <p>If you want to start from scratch again, delete all your envelopes here:</p>
+                    <button id="delete-all-envelopes-btn">Delete All Envelopes</button>
+
+                    <p>Restart everything from scratch and wipe out all data:</p>
+                    <button id="delete-everything-btn">Delete Everything</button>
+                </div>
             </div>
         </div>
     </div>
 
     <div id="search-results-page">
-        <div id="search-bar-return-home-container">
+        <div class="logo-search-container">
+            <img src="./assets/images/coinvelope-logo-original-trans.png" alt="Coinvelope logo" class="dashboard-search-logo" />
+
             <div class="search-container">
                 <form id="search-results-search-form">
-                    <input type="text" id="search-results-search-category" name="category" />
-                    <button type="submit">🔍</button>
+                    <input type="text" id="search-results-search-category" name="category" placeholder="Envelope Search" />
+                    <button type="submit">Search</button>
                 </form>
             </div>
 
-            <button type="button" id="return-to-home-button">Return to Home</button>
+            <button type="button" id="return-to-home-btn">Return to Home</button>
         </div>
 
         <h1 id="search-results-title"></h1>
 
-        <div id="envelope-information-container">
-            <p class="envelope-information-title">Current Balance Amount</p>
-            <p id="current-balance" class="envelope-information"></p>
-        </div>
-
-        <div class="container">
-            <h3 class="container-title">Update Budget Amount</h3>
-
-            <div class="form-container">
-                <form id="update-amount-form" class="form">
-                    <label for="update-amount">How much will you spend <i>now</i> per month in this category?<br><span>Think wisely!</span></label>
-                    <input type="number" id="update-amount" name="amount" required />
-
-                    <button type="submit">Update Amount</button>
-                </form>
+        <div class="container-wrapper">
+            <div class="container">
+                <h3 class="container-title">Current Balance Amount</h3>
+                <p id="current-balance" class="envelope-information"></p>
             </div>
-        </div>
 
-        <div class="container">
-            <h3 class="container-title">Subtract Amount & Track Spending</h3>
+            <div class="container">
+                <h3 class="container-title">Record Spending</h3>
 
-            <div class="form-container">
-                <form id="subtract-amount-form" class="form">
-                    <label for="subtract-amount">Enter the $ value of your purchase/payment in this category</label>
-                    <input type="number" id="subtract-amount" name="amount" required />
+                <div class="form-container">
+                    <form id="subtract-amount-form" class="form">
+                        <label for="subtract-amount">Enter the $ value of your purchase/payment in this category</label>
+                        <input type="number" id="subtract-amount" name="amount" required />
 
-                    <button type="submit">Subtract Amount</button>
-                </form>
+                        <button type="submit">Subtract Amount</button>
+                    </form>
+                </div>
             </div>
-        </div>
 
-        <div id="danger-zone" class="container">
-            <h3 class="container-title">Danger Zone</h3>
-            <p id="danger-zone-msg">If you delete this envelope, you will lose all the data associated with it. This action cannot be undone.</p>
+            <div class="container">
+                <h3 class="container-title">Update Budget Amount</h3>
 
-            <button id="delete-envelope-button">Delete Envelope</button>
+                <div class="form-container">
+                    <form id="update-amount-form" class="form">
+                        <label for="update-amount">How much will you spend <i>now</i> per month in this category?</label>
+                        <input type="number" id="update-amount" name="amount" required />
+
+                        <button type="submit">Update Amount</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="container danger-zone">
+                <h3 class="container-title danger-zone-title">Danger Zone</h3>
+
+                <div class="danger-zone-container">
+                    <p>If this spending category is obsolete or created by accident, delete this envelope here:</p>
+                    <button id="delete-envelope-btn">Delete Envelope</button>
+                </div>
+            </div>
+
+            <div class="container">
+                <h3 class="container-title">It's in the Machine Learning!</h3>
+
+                <p id="product-note">More features and an awesome budgeting data analytics coming soon! At the heart of Coinvelope's product, is machine learning. Our ML regression and classification and fine-tuned Llama models are currently under developement!</p>
+            </div>
         </div>
     </div>
 
@@ -230,7 +257,7 @@
         <img src="./assets/images/coinvelope-logo-original-trans.png" alt="Coinvelope logo" id="footer-logo" />
 
         <div>
-            <p>startup / experiment / project by <a href="https://github.com/BrianHuynh-eng" target="_blank">B.H.</a></p>
+            <p>startup / experiment / project built by <a href="https://github.com/BrianHuynh-eng" target="_blank">B.H.</a></p>
             <p>2024 © Coinvelope</p>
         </div>
     </footer>

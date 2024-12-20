@@ -2,7 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const path = require('path');
 const envelopeRouter = require('./routes/envelope');
-const updatePoolRouter = require('./routes/update-pool');
+const updatesRouter = require('./routes/updates');
 
 const app = express();
 const port = 3000;
@@ -12,7 +12,7 @@ app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/envelope', envelopeRouter);
-app.use('/api/update-pool', updatePoolRouter);
+app.use('/api/updates', updatesRouter);
 
 app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));

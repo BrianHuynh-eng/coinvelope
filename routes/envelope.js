@@ -3,7 +3,7 @@ const toTitleCase = require('../utils/helper-funcs');
 
 const envelopeRouter = express.Router();
 
-const envelopes = []; // Stores envelopes of a category: [{ category: 'Groceries', amount: 100}, { category: 'Gas', amount: 90 }]
+let envelopes = []; // Stores envelopes of a category: [{ category: 'Groceries', amount: 100}, { category: 'Gas', amount: 90 }]
 let budgetingPower = 0;
 
 
@@ -114,6 +114,48 @@ envelopeRouter.put('/transfer', (req, res) => {
             res.status(404).json({ msg: `"${categoryFrom}" envelope not found. Perhaps you made a typo?` });
         }
     }
+});
+
+
+// Update monthly income
+envelopeRouter.put('/update-income', (req, res) => {
+    const { monthlyIncome } = req.body;
+
+    if (!monthlyIncome || monthlyIncome < 0) {
+        return res.status(400).json({ msg: 'Income is required and must be a positive number' });
+    }
+
+    const totalBalance = envelopes.reduce((acc, envelope) => acc + envelope['amount'], 0);
+
+    if (totalBalance > monthlyIncome) {
+        return res.status(400).json({ msg: 'If your income has dropped, you must update your budget amounts for your envelopes to account for the drop in income. After that, make sure the Budgeting Power is the same as the difference your new income and old income' });
+    }
+
+    budgetingPower = monthlyIncome - totalBalance;
+
+    res.status(200).json({ msg: `Monthly income updated to $${budgetingPower}/month` });
+});
+
+
+// Delete all envelopes
+envelopeRouter.delete('/delete-all-envelopes', (req, res) => {
+    if (envelopes.length === 0) {
+        return res.status(404).json({ msg: 'No envelopes to delete' });
+    }
+
+    const totalBalance = envelopes.reduce((acc, envelope) => acc + envelope['amount'], 0);
+    budgetingPower += totalBalance;
+    envelopes = [];
+
+    res.status(200).json({ msg: 'All envelopes deleted' });
+});
+
+
+// Delete everything
+envelopeRouter.delete('/delete-everything', (req, res) => {
+    envelopes = [];
+    budgetingPower = 0;
+    res.status(200).send();
 });
 
 
